@@ -1,0 +1,609 @@
+// Importação de fonte
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+// Reset e configurações globais
+* {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: .2s linear;
+}
+
+// Variáveis
+$carrot-color: #e67e22;
+$black: #130f40;
+$white: #fff;
+$light-color: #666;
+$light-bg: #eee;
+$border: .2rem solid $black;
+$box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+$transparent: transparent;
+
+// Mixins 
+// Grid responsivo
+@mixin grid($val) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($val, 1fr));
+  gap: 1.5rem;
+}
+// Botão de formulário
+@mixin form-btn {
+  width: 100%;
+  text-align: center;
+
+  &:hover {
+    background: $black;
+  }
+}
+
+// Botão branco
+@mixin white-btn{
+    color: $white;
+    border-color: $white;
+
+    &:hover {
+        color: $black;
+    }
+
+    &::before{
+        background: $white;
+    }
+}
+
+// HTML base
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+
+  &::-webkit-scrollbar {
+    width: 1rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $carrot-color;
+    border-radius: 5rem;
+  }
+}
+
+section {
+  padding:5rem 9%;
+}
+
+// Botão padrão
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: .8rem 2.8rem;
+  border-radius: 5rem;
+  border: $border;
+  cursor: pointer;
+  background: none;
+  color: $black;
+  font-size: 1.7rem;
+  overflow: hidden;
+  z-index: 0;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: $black;
+    z-index: -1;
+    transition: .2s linear;
+    clip-path: circle(0% at 0% 5%);
+  }
+
+  &:hover::before {
+    clip-path: circle(100%);
+  }
+
+  &:hover {
+    color: $white;
+  }
+}
+
+// Animação de fade-in
+@keyframes fadeIn {
+  0% {
+    transform: translateY(3rem);
+    opacity: 0;
+  }
+}
+
+body{
+    height: 300rem;
+}
+// HEADER
+.header {
+  background: $white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 9%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  
+
+  
+}
+
+body {
+  padding-top: 80px; // ou a altura da sua navbar
+}
+
+
+.logo {
+  font-size: 2.5rem;
+  color: $black;
+  font-weight: bolder;
+
+  i {
+    color: $carrot-color;
+  }
+}
+
+.navbar a {
+  margin: 0 0rem;
+  font-size: 3rem;
+  color: $light-color;
+
+  &:hover {
+    color: $carrot-color;
+  }
+}
+
+.icons a,
+.icons div {
+  font-size: 2rem;
+  color: $black;
+  margin: 0 .5rem;
+  cursor: pointer;
+  transition: .3s ease;
+
+  &:hover {
+    color: $carrot-color;
+  }
+}
+
+// FORMULÁRIO DE LOGIN
+.login-form {
+  position: absolute;
+  top: 115%;
+  right: 2rem;
+  width: 35rem;
+  border-radius: .5rem;
+  background: $white;
+  box-shadow: $box-shadow;
+  padding: 2rem;
+  display: none;
+
+  &.active {
+    display: block;
+    animation: fadeIn .4s linear;
+  }
+
+  h3 {
+    color: $black;
+    font-size: 2.5rem;
+    padding-bottom: .5rem;
+  }
+
+  .box {
+    width: 100%;
+    border-bottom: $border;
+    border-width: .1rem;
+    padding: 1.5rem 0;
+    font-size: 1.6rem;
+    color: $black;
+    text-transform: none;
+    margin: 1rem 0;
+  }
+
+  .lembrar-me {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 1rem 0;
+    margin: 1rem 0;
+
+    label {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: $light-color;
+    }
+  }
+
+  .btn {
+    @include form-btn;
+    margin: 1.5rem 0;
+  }
+
+  .links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+
+    a {
+      font-size: 1.4rem;
+      color: $carrot-color;
+      text-transform: none;
+
+      &:hover {
+        color: $black;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Ícone de menu mobile
+#menu-btn {
+  display: none;
+}
+//pagina inicial e fundo
+.home {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: url('../image/fundo.png') no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+
+    .content {
+      width: 50rem;
+
+      h3 {
+        font-size: 6rem;
+        color: $white;
+        padding-bottom: 1rem;
+      }
+
+      span{
+        color: $carrot-color;
+      }
+      
+    }
+
+    .btn {
+      @include white-btn;
+      margin-top: 2rem;
+      font-size: 1.8rem;
+    }
+}
+
+
+.btn-agendar {
+  display: inline-block;
+  padding: 1rem 3rem;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #e67e22;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-top: 2rem;
+
+  &:hover {
+    background-color: #cf6a0f;
+    transform: translateY(-3px);
+  }
+}
+
+
+
+// RESPONSIVIDADE
+@media (max-width: 991px) {
+  html {
+    font-size: 55%;
+  }
+
+  .header {
+    padding: 2rem;
+  }
+
+  section {
+  padding: 5rem 2rem;
+ }
+ .home{
+    justify-content: center;
+    background-position: right;
+      
+        .content{
+            text-align: center;
+            padding-bottom: 5rem;
+
+            h3 {
+                font-size: 4rem;
+            }
+        }
+ }
+
+}
+
+@media (max-width: 768px) {
+  #menu-btn {
+    display: inline-block;
+  }
+
+  .header {
+
+    .navbar {
+      position: absolute;
+      top: 99%; left: 0; right: 0;
+      background: $white;
+      //clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+
+      a {
+        display: block;
+        margin:2rem;
+        font-size: 2rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  html {
+    font-size: 50%;
+  }
+
+  .header .login-form {
+    width: 90%;
+    right: 1rem;
+    padding: 1.5rem;
+    font-size: 1.4rem;
+  }
+}
+
+// sobre nós
+.sobre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 4rem 7%;
+
+  .image {
+    flex: 1 1 30rem;
+
+    img {
+      width: 600px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  .conteudo {
+    flex: 1 1 40rem;
+    padding: 1rem;
+
+    h3 {
+      font-size: 6rem;
+      color: $black;
+
+      span {
+        color: $carrot-color;
+      }
+    }
+
+    p {
+      font-size: 2rem;
+      color: $light-color;
+      line-height: 1.5;
+      margin-top: 1rem;
+    }
+  }
+}
+// Seção de serviços
+.servicos {
+  text-align: center; // centraliza horizontalmente
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 3rem; 
+    font-weight: bold;
+    color: $black;
+
+    span {
+      color: $carrot-color;
+    }
+  }
+}
+
+// Container de serviços
+.servicos .box-container{
+  @include grid(30rem);
+
+  .box{
+    background: $light-bg;
+    padding:3rem;
+    text-align: center;
+    border-radius: 33% 67% 70% 30% / 30% 30% 70% 70%;
+
+    &:nth-child(even){
+      border-radius: 79% 21% 81% 19% / 58% 93% 7% 42%;
+    }
+
+    &:hover{
+      border-radius: .5rem;
+    }
+
+    i{
+      height:6.5rem;
+      width:6.5rem;
+      line-height:6.5rem;
+      font-size: 3rem;
+      color:$white;
+      background: $carrot-color;
+      border-radius: 50%;
+      margin-bottom: .5rem;
+    }
+
+    h3{
+      font-size: 2.2rem;
+      color:$black;
+      padding:1rem 0;
+    }
+  }
+}
+
+//banho, tossa e vacina
+@each $section in banho, tossa, vacina {
+  .#{$section} {
+    display: flex;
+    flex-direction: row; // garante que fique lado a lado
+    align-items: center; // centraliza verticalmente
+    justify-content: center; // centraliza horizontalmente
+    flex-wrap: wrap;
+    gap: 4rem;
+    padding: 5rem 7%;
+
+    .image {
+      flex: 0 1 700px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        display: block;
+      }
+    }
+
+    .content {
+      flex: 1 1 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      h3 {
+        display: flex;
+        align-items: center;
+        font-size: 4rem;
+        color: #130f40;
+        gap: 0.8rem;
+
+        .icon {
+          font-size: 2.5rem;
+          color: #6c5ce7;
+        }
+
+        span {
+          color: #e67e22;
+        }
+      }
+
+      p {
+        font-size: 2rem;
+        color: #666;
+        line-height: 1.8;
+        margin: 1rem 0;
+      }
+
+      ul {
+        margin-left: 2rem;
+        margin-bottom: 1rem;
+
+        li {
+          font-size: 1.6rem;
+          color: #444;
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+// Seção de contato e localização
+.contato-localizacao {
+  padding: 5rem 2rem;
+  background: #f9f9f9;
+
+  .heading {
+    text-align: center;
+    font-size: 3.5rem;
+    color: #130f40;
+    margin-bottom: 3rem;
+
+    span {
+      color: #e67e22;
+    }
+  }
+
+  .container {
+    max-width: 1200px; //  mais largo
+    margin: 0 auto; //  centralizado
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 3rem;
+
+    .info-contato,
+    .info-localizacao {
+      flex: 1 1 500px; //  aumenta largura
+      background: #fff;
+      padding: 3rem;
+      border-radius: 1rem;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05);
+      min-width: 280px;
+
+      h3 {
+        font-size: 2.2rem;
+        color: #130f40;
+        margin-bottom: 1.5rem;
+
+        i {
+          color: #e67e22;
+          margin-right: 0.5rem;
+        }
+      }
+
+      p {
+        font-size: 1.6rem;
+        color: #444;
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+
+        i {
+          color: #e67e22;
+          margin-right: 0.8rem;
+        }
+      }
+    }
+  }
+}
+

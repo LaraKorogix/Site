@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Totó</title>
+
+    <!-- Fonte Awesome (ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Estilo personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+
+</head>
+<body>
+    
+    <!-- Início do cabeçalho -->
+    <header class="header">
+
+        <!-- Logo -->
+        <a href="#" class="logo">
+            <i class="fas fa-paw"></i>Totó
+        </a>
+
+        <!-- Menu de navegação -->
+        <nav class="navbar">
+            <a href="#home">Início</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#servicos">Serviços</a>
+            <a href="#contato-localizacao">Contato</a>
+        </nav>
+
+        <!-- Ícones do menu ( login) -->
+        <div class="icons">
+            <div class="fas fa-bars" id="menu-btn"></div>
+            <div class="fas fa-user" id="login-btn"></div>
+        </div>
+
+        <!-- Formulário de login -->
+        <form action="#" class="login-form">
+            <h3>Entrar</h3>
+            <input type="email" placeholder="Digite seu email" class="box">
+            <input type="password" placeholder="Digite sua senha" class="box">
+            
+            <div class="lembrar-me">
+                <input type="checkbox" id="lembrar-me">
+                <label for="lembrar-me">Lembrar-me</label>
+            </div>
+
+            <input type="submit" value="Entrar" class="btn">
+
+            <div class="links">
+                <a href="#">Esqueceu a senha?</a>
+                <a href="#">Não tem uma conta?</a>
+            </div>
+        </form>
+
+    </header>
+    <!-- Fim do cabeçalho -->
+
+    <!-- inicio do conteúdo principal -->
+
+    <selection class="home" id="home">
+
+        <div class="content">
+            <h3>Bem-vindo ao Pet Shop Totó</h3>
+            <a href="#servicos" class="btn">Nossos Serviços</a>
+        </div>
+        
+        <div class="image">
+            <img src="{{ url_for('static', filename='image/choso_snow.png') }}" alt="Imagem de um cachorro feliz">
+
+        </div>
+    </selection>
+    <!-- fim do conteúdo principal -->
+
+    <!-- Início da seção Sobre -->
+    <section class="sobre" id="sobre">
+        <div class="image">
+            <img src="{{ url_for('static', filename='image/hera.png') }}" alt="Imagem de um pet">
+        </div>
+        <div class="conteudo">
+            <h3>🐾 Sobre <span>nós</span> </h3>
+            <p>No nosso Pet Shop, acreditamos que todo animal merece ser tratado com amor, respeito e dedicação. Mais do que uma loja, somos uma equipe apaixonada por cuidar dos seus pets como se fossem nossos.</p>
+        </div>
+</section>
+  <!-- fim da seção Sobre -->
+
+    <!-- Início da seção Serviços --> 
+<section class="servicos" id="servicos">
+    <h3> Nossos <span>Serviços</span> </h3>
+
+    <div class="box-container">
+
+        <div class="box">
+            <i class="fas fa-bath"></i>
+            <h3>Banho</h3>
+            <a href="#banho" class="btn">Ver Mais</a>
+        </div>  
+        <div class="box">
+            <i class="fas fa-dog"></i>
+            <h3>Tosa</h3>
+            <a href="#tossa" class="btn">Ver Mais</a>
+        </div>
+        <div class="box">
+            <i class="fas fa-cat"></i>
+            <h3>Vacinação</h3>
+            <a href="#vacina" class="btn">Ver Mais</a>
+        </div>
+    </div>
+</section>
+<!-- fim da seção Serviços --> 
+
+<!-- início da seção Sobre Banho, Tossa e Vacinação -->
+<section class="about banho" id="banho">
+  <div class="image">
+    <img src="{{ url_for('static', filename='image/banho.png') }}" alt="Banho em pet">
+  </div>
+  <div class="content">
+    <h3>🧼 Banho <span>com Carinho</span></h3>
+    <p>No nosso pet shop, o banho é mais do que limpeza — é um momento de cuidado e bem-estar. Utilizamos produtos específicos para cada tipo de pelagem e realizamos o processo com paciência e muito carinho.</p>
+    <p>A média de duração é de <strong>40 a 60 minutos</strong>, dependendo do porte e temperamento do pet.</p>
+   
+    <p>Agende o banho do seu pet e proporcione a ele uma experiência tranquila, segura e cheia de afeto! 🐶🐱</p>
+    <button class="btn-agendar">Agendar</button>
+  </div>
+</section>
+
+<section class="sobre tossa" id="tossa">
+  <div class="image">
+    <img src="{{ url_for('static', filename='image/tossa.png') }}" alt="Tossa em pet">
+  </div>
+  <div class="content">
+    <h3>✂️ Tosa <span>com Estilo</span></h3>
+    <p>A tosa vai muito além da estética — é essencial para o conforto e a saúde do seu pet. Realizamos tosas higiênicas, padrão ou personalizadas, sempre respeitando a pelagem e a personalidade de cada animal. Utilizamos equipamentos higienizados e técnicas cuidadosas para garantir uma experiência positiva e segura.</p>
+    <p>A média de duração é de <strong>50 a 70 minutos</strong>, podendo variar de acordo com o tipo de tosa e o porte do pet.</p>
+    
+    <p>Seu pet merece ficar ainda mais lindo e confortável! Agende uma tosa com quem entende de carinho e cuidado. ✨🐾</p>
+    <button class="btn-agendar">Agendar</button>
+  </div>
+</section>
+
+<section class="sobre vacina" id="vacina">
+  <div class="image">
+    <img src="{{ url_for('static', filename='image/vacina.png') }}" alt="Vacinação em pet">
+  </div>
+  <div class="content">
+    <h3>💉 Vacinação <span>com Responsabilidade</span></h3>
+    <p>A saúde do seu pet começa pela prevenção. Trabalhamos com vacinas confiáveis e profissionais capacitados para garantir a proteção e o bem-estar dos animais. Todo o processo é realizado em ambiente limpo e controlado, com atenção ao histórico e comportamento de cada pet.</p>
+    <p>A média de duração é de <strong>15 a 30 minutos</strong>, incluindo triagem, aplicação e orientações ao tutor.</p>
+    
+    <p>Cuidar da saúde do seu pet é um gesto de amor. Mantenha as vacinas em dia e conte com a gente para isso! 💙🐶🐱</p>
+      <button class="btn-agendar">Agendar</button>
+</div>
+
+  </div>
+</section>
+<!-- fim da seção Sobre Banho, Tossa e Vacinação  -->
+
+<!-- inicio da seção Contato e Localização  -->
+<section class="contato-localizacao" id="contato-localizacao">
+  <h1 class="heading">Entre em <span>Contato</span> & Nossa <span>Localização</span></h1>
+
+  <div class="container">
+    <div class="info-contato">
+      <h3>Entre em contato com a gente!</h3>
+      <p><i class="fas fa-phone"></i> Telefone: (61) 9 1234-5678</p>
+      <p><i class="fas fa-envelope"></i> E-mail: contato@petshopdoamor.com.br</p>
+      <p><i class="fas fa-clock"></i> Atendimento: Segunda a Sábado, das 9h às 18h</p>
+      <p><i class="fas fa-map-marker-alt"></i> Endereço: Rua das Patinhas, 123 - Brasília/DF</p>
+    </div>
+
+    <div class="info-localizacao">
+      <h3><i class="fas fa-map-marker-alt"></i> Endereço:</h3>
+      <p>Rua das Patinhas, 123<br>Brasília - DF, 70000-000</p>
+      <h3><i class="fas fa-clock"></i> Horário de funcionamento:</h3>
+      <p>Segunda a Sábado<br>09h às 18h</p>
+      <h3><i class="fas fa-phone"></i> Contato:</h3>
+      <p>(61) 9 1234-5678</p>
+    </div>
+  </div>
+</section>
+
+<!-- fim da seção Contato e Localização  -->
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: white;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .navbar a {
+    color: black;
+    margin: 0 1rem;
+    font-size: 1.5rem;
+    text-decoration: none;
+  }
+  .logo {
+    font-size: 2rem;
+    color: black;
+  }
+</style>
+
+    <!-- Script JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+
+</body>
+</html>
