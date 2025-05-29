@@ -1,4 +1,5 @@
 🐾 Projeto Totó Pet Shop – Estrutura das Páginas
+
 📌 Página Inicial
 Apresenta opções principais como “Entrar”, “Cadastrar” e “Agendar”.
 
