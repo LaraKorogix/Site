@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Serviços | Totó Pet Shop</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+  <style>
+  .main-content {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .form-servico, .lista-agendamentos {
+    background: var(--light);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    flex: 1;
+    min-width: 320px;
+  }
+
+  .form-servico {
+    flex: 1.2;
+  }
+
+  .lista-agendamentos {
+    flex: 1;
+  }
+
+  .form-servico label,
+  .lista-agendamentos h3 {
+    font-weight: 600;
+    margin-top: 1rem;
+    color: var(--dark);
+  }
+
+  .form-servico input,
+  .form-servico select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--grey);
+    background-color: var(--grey);
+    font-family: var(--poppins);
+  }
+
+  .form-servico button {
+    margin-top: 1.5rem;
+    background: var(--green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .form-servico button:hover {
+    background: var(--green-2);
+  }
+
+  .agendamento {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-left: 5px solid var(--orange);
+    background: var(--grey);
+    border-radius: 8px;
+  }
+
+  .agendamento strong {
+    display: block;
+    color: var(--dark);
+  }
+
+  @media (max-width: 900px) {
+    .main-content {
+      flex-direction: column;
+    }
+
+    .form-servico, .lista-agendamentos {
+      width: 100%;
+    }
+  }
+</style>
+<body>
+    
+
+
+  <!-- SIDEBAR -->
+  <section id="sidebar">
+    <a href="#" class="brand">
+      <i class='bx bxs-smile'></i>
+      <span class="text">Totó</span>
+    </a>
+    <ul class="side-menu top">
+      <li><a href="index.html"><i class='bx bxs-dashboard'></i><span class="text">Menu</span></a></li>
+      <li class="active"><a href="servicos.html"><i class='bx bxs-shopping-bag-alt'></i><span class="text">Serviços</span></a></li>
+      <li><a href="vacinacoes.html"><i class='bx bxs-doughnut-chart'></i><span class="text">Vacinações</span></a></li>
+      <li><a href="cadastro.html"><i class='bx bxs-group'></i><span class="text">Cadastro</span></a></li>
+    </ul>
+    <ul class="side-menu">
+      <li><a href="#"><i class='bx bxs-cog'></i><span class="text">Configurações</span></a></li>
+      <li><a href="#" class="logout"><i class='bx bxs-log-out-circle'></i><span class="text">Logout</span></a></li>
+    </ul>
+  </section>
+
+  <!-- CONTEÚDO -->
+  <section id="content">
+
+    <!-- NAVBAR -->
+    <nav>
+      <i class='bx bx-menu'></i>
+      <a href="#" class="profile">
+        <img src="img/profile.jpg" alt="Foto de perfil">
+      </a>
+    </nav>
+
+    <!-- MAIN -->
+    <main>
+      <div class="head-title">
+        <div class="left">
+          <h1>Agendar Serviço</h1>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <!-- Formulário -->
+        <div class="form-servico">
+          <form id="form-agendamento">
+            <label for="pet">Nome do Pet:</label>
+            <input type="text" id="pet" required>
+
+            <label for="servico">Serviço:</label>
+            <select id="servico" required>
+              <option value="">Selecione</option>
+              <option value="Banho">Banho</option>
+              <option value="Tosa">Tosa</option>
+              <option value="Vacinação">Vacinação</option>
+            </select>
+
+            <label for="data">Data:</label>
+            <input type="date" id="data" required>
+
+            <label for="hora">Horário:</label>
+            <input type="time" id="hora" min="08:00" max="18:00" required>
+
+            <button type="submit">Agendar</button>
+          </form>
+        </div>
+
+        <!-- Lista de Agendamentos -->
+        <div class="lista-agendamentos">
+          <h3>Serviços Agendados</h3>
+          <div id="lista-agendados"></div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <script>
+    const form = document.getElementById('form-agendamento');
+    const lista = document.getElementById('lista-agendados');
+
+    function salvarAgendamento(agendamento) {
+      let agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+      agendamentos.push(agendamento);
+      localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+      exibirAgendamentos();
+    }
+
+    function exibirAgendamentos() {
+      const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+      lista.innerHTML = '';
+      agendamentos.forEach(a => {
+        const div = document.createElement('div');
+        div.classList.add('agendamento');
+        div.innerHTML = `
+          <strong>Pet:</strong> ${a.pet}
+          <strong>Serviço:</strong> ${a.servico}
+          <strong>Data:</strong> ${a.data}
+          <strong>Horário:</strong> ${a.hora}
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const agendamento = {
+        pet: form.pet.value,
+        servico: form.servico.value,
+        data: form.data.value,
+        hora: form.hora.value
+      };
+      salvarAgendamento(agendamento);
+      form.reset();
+    });
+
+    document.addEventListener('DOMContentLoaded', exibirAgendamentos);
+  </script>
+
+</body>
+</html>

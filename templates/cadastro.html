@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro | Totó Pet Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <style>
+        /* Estilo adicional para os formulários dentro do padrão Totó */
+        .form-cadastro {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            max-width: 800px;
+            margin-top: 2rem;
+        }
+
+        .form-cadastro label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-cadastro input,
+        .form-cadastro select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--grey);
+            margin-top: 0.5rem;
+            background-color: var(--grey);
+            color: var(--dark);
+            font-family: var(--poppins);
+        }
+
+        .form-cadastro button {
+            margin-top: 1.5rem;
+            background: var(--green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .form-cadastro button:hover {
+            background: var(--green-2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-smile'></i>
+            <span class="text">Totó</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="index.html">
+                    <i class='bx bxs-dashboard'></i>
+                    <span class="text">Menu</span>
+                </a>
+            </li>
+            <li>
+                <a href="servicos.html">
+                    <i class='bx bxs-shopping-bag-alt'></i>
+                    <span class="text">Serviços</span>
+                </a>
+            </li>
+            <li>
+                <a href="vacinacoes.html">
+                    <i class='bx bxs-doughnut-chart'></i>
+                    <span class="text">Vacinações</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="cadastro.html">
+                    <i class='bx bxs-group'></i>
+                    <span class="text">Cadastro</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+           
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- CONTEÚDO -->
+    <section id="content">
+
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu'></i>
+           
+        </nav>
+
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Cadastro de Cliente e Pet</h1>
+                </div>
+            </div>
+
+            <div class="form-cadastro">
+                <form action="#" method="post">
+                    <h2>Informações do Cliente</h2>
+
+                    <label for="nome-cliente">Nome do Cliente:</label>
+                    <input type="text" id="nome-cliente" name="nome-cliente" required>
+
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" required>
+
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone">
+
+                    <hr style="margin: 2rem 0; border: 1px solid var(--grey);">
+
+                    <h2>Informações do Pet</h2>
+
+                    <label for="nome-pet">Nome do Pet:</label>
+                    <input type="text" id="nome-pet" name="nome-pet" required>
+
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo" name="tipo">
+                        <option value="Cachorro">Cachorro</option>
+                        <option value="Gato">Gato</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+
+                    <label for="raca">Raça:</label>
+                    <input type="text" id="raca" name="raca">
+
+                    <label for="idade">Idade (em anos):</label>
+                    <input type="number" id="idade" name="idade" min="0">
+
+                    <button type="submit">Cadastrar</button>
+                </form>
+            </div>
+        </main>
+
+    </section>
+
+</body>
+</html>
