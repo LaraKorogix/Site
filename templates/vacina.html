@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Vacinações | Totó Pet Shop</title>
+
+  <!-- Estilo CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/vacinacoes.css') }}">
+
+  <!-- Ícones Boxicons -->
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <section id="sidebar">
+    <a href="#" class="brand">
+      <i class='bx bxs-smile'></i>
+      <span class="text">Totó</span>
+    </a>
+    <ul class="side-menu top">
+      <li>
+        <a href="{{ url_for('home') }}">
+          <i class='bx bxs-dashboard'></i>
+          <span class="text">Menu</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('servico') }}">
+          <i class='bx bxs-shopping-bag-alt'></i>
+          <span class="text">Serviços</span>
+        </a>
+      </li>
+      <li class="active">
+        <a href="{{ url_for('vacina') }}">
+          <i class='bx bxs-doughnut-chart'></i>
+          <span class="text">Vacina</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('index') }}" class="logout">
+          <i class='bx bxs-log-out-circle'></i>
+          <span class="text">Logout</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- CONTEÚDO -->
+  <section id="content">
+
+    <!-- NAVBAR -->
+    
+
+    <!-- MAIN -->
+    <main>
+      <div class="head-title">
+        <div class="left">
+          <h1>Histórico de Vacinação</h1>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <!-- Lista de Vacinações -->
+        <div class="lista-agendamentos">
+          <h3>Vacinas Aplicadas</h3>
+          <div id="lista-vacinas"></div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- SCRIPT -->
+		<script src="{{ url_for('static', filename='js/vacina.js') }}"></script>
+
+
+</body>
+</html>

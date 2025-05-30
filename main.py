@@ -2,29 +2,22 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# 1. Página inicial redireciona para login-cadastro
-
-
+# Página inicial (index.html)
 @app.route('/')
 def index():
-    return redirect(url_for('index'))
+    return render_template('index.html')
 
-# 2. Página de login ou criação de conta
-@app.route('/login-cadastro', methods=['GET'])
+# Página com opções de login/cadastro
+@app.route('/login-cadastro')
 def logincadastro():
     return render_template('login-cadastro.html')
 
-# 3. Página home após login ou cadastro concluído
-@app.route('/home')
-def home():
-    return render_template('home.html')
-
-# 4. Página de formulário de cadastro
-@app.route('/cadastro', methods=['GET'])
+# Página de cadastro
+@app.route('/cadastro')
 def exibir_cadastro():
     return render_template('cadastro.html')
 
-# 5. Processa o cadastro e redireciona para home
+# Envio do formulário de cadastro
 @app.route('/registrar', methods=['POST'])
 def registrar():
     nome = request.form.get('nome')
@@ -42,6 +35,20 @@ def registrar():
     print(f"Novo cadastro: {nome}, {email}, {cpf}")
     return redirect(url_for('home'))
 
-# Executa o servidor
+# Página home após login ou cadastro
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+@app.route('/servico')
+def servico():
+    return render_template('servicos.html')
+
+@app.route('/vacina')
+def vacina():
+    return render_template('vacina.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)

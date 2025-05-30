@@ -3,39 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <title>Serviços | Totó Pet Shop</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/servicos.css') }}">
   <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
 
 
 <body>
   <!-- SIDEBAR -->
-  <section id="sidebar">
-    <a href="#" class="brand">
-      <i class='bx bxs-smile'></i>
-      <span class="text">Totó</span>
-    </a>
-    <ul class="side-menu top">
-      <li><a href="index.html"><i class='bx bxs-dashboard'></i><span class="text">Menu</span></a></li>
-      <li class="active"><a href="servicos.html"><i class='bx bxs-shopping-bag-alt'></i><span class="text">Serviços</span></a></li>
-      <li><a href="vacinacoes.html"><i class='bx bxs-doughnut-chart'></i><span class="text">Vacinações</span></a></li>
-      <li><a href="cadastro.html"><i class='bx bxs-group'></i><span class="text">Cadastro</span></a></li>
-    </ul>
-    <ul class="side-menu">
-      <li><a href="#"><i class='bx bxs-cog'></i><span class="text">Configurações</span></a></li>
-      <li><a href="#" class="logout"><i class='bx bxs-log-out-circle'></i><span class="text">Logout</span></a></li>
-    </ul>
-  </section>
+    <section id="sidebar">
+      <a href="home.html" class="brand">
+        <i class='bx bxs-smile'></i>
+        <span class="text">Totó</span>
+      </a>
+      <ul class="side-menu top">
+        <li class="active">
+          <a href="{{ url_for('home') }}">
+            <i class='bx bxs-dashboard'></i>
+            <span class="text">Menu</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('servico') }}">
+            <i class='bx bxs-shopping-bag-alt'></i>
+            <span class="text">Serviços</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('vacina') }}">
+            <i class='bx bxs-doughnut-chart'></i>
+            <span class="text">Vacina</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('index') }}" class="logout">
+            <i class='bx bxs-log-out-circle'></i>
+            <span class="text">Logout</span>
+          </a>
+        </li>
+      </ul>
+
+    </section>
 
   <!-- CONTEÚDO -->
   <section id="content">
 
     <!-- NAVBAR -->
-    <nav>
-      <i class='bx bx-menu'></i>
-      <a href="#" class="profile">
-        <img src="img/profile.jpg" alt="Foto de perfil">
-      </a>
-    </nav>
+    
 
     <!-- MAIN -->
     <main>
@@ -78,48 +92,7 @@
       </div>
     </main>
   </section>
-
-  <script>
-    const form = document.getElementById('form-agendamento');
-    const lista = document.getElementById('lista-agendados');
-
-    function salvarAgendamento(agendamento) {
-      let agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-      agendamentos.push(agendamento);
-      localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
-      exibirAgendamentos();
-    }
-
-    function exibirAgendamentos() {
-      const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-      lista.innerHTML = '';
-      agendamentos.forEach(a => {
-        const div = document.createElement('div');
-        div.classList.add('agendamento');
-        div.innerHTML = `
-          <strong>Pet:</strong> ${a.pet}
-          <strong>Serviço:</strong> ${a.servico}
-          <strong>Data:</strong> ${a.data}
-          <strong>Horário:</strong> ${a.hora}
-        `;
-        lista.appendChild(div);
-      });
-    }
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const agendamento = {
-        pet: form.pet.value,
-        servico: form.servico.value,
-        data: form.data.value,
-        hora: form.hora.value
-      };
-      salvarAgendamento(agendamento);
-      form.reset();
-    });
-
-    document.addEventListener('DOMContentLoaded', exibirAgendamentos);
-  </script>
+  <script src="{{ url_for('static', filename='js/servico.js') }}"></script>
 
 </body>
 </html>

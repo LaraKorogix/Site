@@ -1,83 +1,144 @@
+/* === FONTES === */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
 
+/* === RESET GLOBAL === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+/* === VARIÁVEIS DE TEMA === */
+:root {
+  --poppins: 'Poppins', sans-serif;
+  --lato: 'Lato', sans-serif;
+
+  --light: #F9F9F9;
+  --green: #39c90d;
+  --green-2: #558a00;
+  --grey: #eee;
+  --dark-grey: #AAAAAA;
+  --dark: #342E37;
+  --red: #bd1b16;
+  --yellow: #FFCE26;
+  --light-yellow: #FFF2C6;
+  --orange: #ff6131;
+  --light-orange: #FFE0D3;
+}
+
+/* === DARK MODE === */
+body.dark {
+  --light: #0C0C1E;
+  --grey: #060714;
+  --dark: #FBFBFB;
+}
+
+/* === ESTILOS GERAIS === */
+body {
+  background: var(--grey);
+  font-family: var(--poppins);
+  overflow-x: hidden;
+}
+
+/* === CONTEÚDO PRINCIPAL === */
+.main-content {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+/* === FORMULÁRIO E LISTA DE AGENDAMENTOS === */
+.form-servico,
+.lista-agendamentos {
+  background: var(--light);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  flex: 1;
+  min-width: 320px;
+}
+
+.form-servico {
+  flex: 1.2;
+}
+
+.lista-agendamentos {
+  flex: 1;
+}
+
+/* === TÍTULOS E RÓTULOS === */
+.form-servico label,
+.lista-agendamentos h3 {
+  font-weight: 600;
+  margin-top: 1rem;
+  color: var(--dark);
+}
+
+/* === CAMPOS DO FORMULÁRIO === */
+.form-servico input,
+.form-servico select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--grey);
+  background-color: var(--grey);
+  font-family: var(--poppins);
+}
+
+/* === BOTÃO DE AGENDAR === */
+.form-servico button {
+  margin-top: 1.5rem;
+  background: var(--green);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-servico button:hover {
+  background: var(--green-2);
+}
+
+/* === AGENDAMENTOS LISTADOS === */
+.agendamento {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-left: 5px solid var(--orange);
+  background: var(--grey);
+  border-radius: 8px;
+}
+
+.agendamento strong {
+  display: block;
+  color: var(--dark);
+}
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 900px) {
   .main-content {
-    display: flex;
-    gap: 2rem;
-    justify-content: space-between;
-    margin-top: 2rem;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
-  .form-servico, .lista-agendamentos {
-    background: var(--light);
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    flex: 1;
-    min-width: 320px;
-  }
-
-  .form-servico {
-    flex: 1.2;
-  }
-
+  .form-servico,
   .lista-agendamentos {
-    flex: 1;
-  }
-
-  .form-servico label,
-  .lista-agendamentos h3 {
-    font-weight: 600;
-    margin-top: 1rem;
-    color: var(--dark);
-  }
-
-  .form-servico input,
-  .form-servico select {
     width: 100%;
-    padding: 10px;
-    margin-top: 0.5rem;
-    border-radius: 8px;
-    border: 1px solid var(--grey);
-    background-color: var(--grey);
-    font-family: var(--poppins);
   }
-
-  .form-servico button {
-    margin-top: 1.5rem;
-    background: var(--green);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-  .form-servico button:hover {
-    background: var(--green-2);
-  }
-
-  .agendamento {
-    margin-top: 1rem;
-    padding: 1rem;
-    border-left: 5px solid var(--orange);
-    background: var(--grey);
-    border-radius: 8px;
-  }
-
-  .agendamento strong {
-    display: block;
-    color: var(--dark);
-  }
-
-  @media (max-width: 900px) {
-    .main-content {
-      flex-direction: column;
-    }
-
-    .form-servico, .lista-agendamentos {
-      width: 100%;
-    }
-  }
-
+}

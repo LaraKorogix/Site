@@ -22,36 +22,31 @@
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
-				<a href="home.html">
+				<a href="{{ url_for('home') }}">
 					<i class='bx bxs-dashboard'></i>
 					<span class="text">Menu</span>
 				</a>
 			</li>
 			<li>
-				<a href="servicos.html">
+				<a href="{{ url_for('servico') }}">
 					<i class='bx bxs-shopping-bag-alt'></i>
 					<span class="text">Serviços</span>
 				</a>
 			</li>
 			<li>
-				<a href="vacinacoes.html">
+				<a href="{{ url_for('vacina') }}">
 					<i class='bx bxs-doughnut-chart'></i>
-					<span class="text">Vacinações</span>
+					<span class="text">Vacina</span>
 				</a>
 			</li>
 			<li>
-				<a href="cadastro.html">
-					<i class='bx bxs-group'></i>
-					<span class="text">Cadastro</span>
-				</a>
-			</li>
-			<li>
-				<a href="#" class="logout">
+				<a href="{{ url_for('index') }}" class="logout">
 					<i class='bx bxs-log-out-circle'></i>
 					<span class="text">Logout</span>
 				</a>
 			</li>
 		</ul>
+
 	</section>
 	<!-- FIM SIDEBAR -->
 
@@ -59,11 +54,7 @@
 	<!-- CONTEÚDO PRINCIPAL -->
 	<section id="content">
 
-		<!-- NAVBAR -->
-		<nav>
-			<i class='bx bx-menu'></i>
-		</nav>
-		<!-- FIM NAVBAR -->
+		
 
 		<!-- MAIN -->
 		<main>
@@ -89,7 +80,6 @@
 						<tbody>
 							<tr>
 								<td>
-									<img src="#" alt="Foto do usuário">
 									<p>Admin</p>
 								</td>
 								<td>01-10-2021</td>
@@ -97,7 +87,6 @@
 							</tr>
 							<tr>
 								<td>
-									<img src="#" alt="Foto do usuário">
 									<p>John Doe</p>
 								</td>
 								<td>01-10-2021</td>
@@ -105,7 +94,6 @@
 							</tr>
 							<tr>
 								<td>
-									<img src="#" alt="Foto do usuário">
 									<p>John Doe</p>
 								</td>
 								<td>01-10-2021</td>
@@ -113,7 +101,6 @@
 							</tr>
 							<tr>
 								<td>
-									<img src="#" alt="Foto do usuário">
 									<p>John Doe</p>
 								</td>
 								<td>01-10-2021</td>
@@ -129,6 +116,8 @@
 	</section>
 	<!-- FIM CONTEÚDO PRINCIPAL -->
 
-	<script src="homescript.js"></script>
+	<script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>
 </html>
+
+===
