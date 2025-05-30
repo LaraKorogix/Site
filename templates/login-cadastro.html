@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Login ou Cadastro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-cadastro.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <header class="topo">
+        <div class="logo">Totó</div>
+    </header>
+
+    <main class="container">
+        <h2>Acessar ou criar conta</h2>
+
+        <div class="painel">
+            <!-- Bloco de login -->
+            <div class="login-box">
+                <h3>Acesse sua conta</h3>
+                <label for="email">E-mail ou CPF</label>
+                <input type="text" id="email" placeholder="Digite seu e-mail ou CPF/CNPJ">
+
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Sua senha">
+
+                <!-- Botão de login -->
+                <a href="{{ url_for('home') }}">
+                    <button class="btn">Fazer login</button>
+                </a>
+            </div>
+
+            <!-- Bloco de cadastro -->
+            <div class="cadastro-box">
+                <h3>Criar uma conta é rápido,<br> fácil e gratuito!</h3>
+                <p>Com sua conta você terá acesso a ofertas exclusivas, descontos e poderá agendar serviços, acompanhar pedidos e muito mais!</p>
+                <!-- Botão de cadastro -->
+                <a href="{{ url_for('exibir_cadastro') }}">
+                    <button class="btn">Cadastre-se</button>
+                </a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

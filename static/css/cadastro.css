@@ -1,0 +1,93 @@
+body {
+    background: #f2f2f2;
+    font-family: Arial, sans-serif;
+}
+
+.topo {
+    background: white;
+    padding: 1rem 2rem;
+    font-size: 24px;
+    font-weight: bold;
+    color: #0056b3;
+    border-bottom: 1px solid #ddd;
+}
+
+.form-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.form-box h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 0.2rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.tipo-pessoa {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.opcional {
+    font-weight: normal;
+    font-size: 12px;
+    color: #888;
+}
+
+.senha-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.senha-group div {
+    flex: 1;
+}
+
+.senha-regras ul {
+    font-size: 13px;
+    margin: 0.5rem 0 1rem 1.2rem;
+    color: #555;
+}
+
+.termos {
+    display: block;
+    margin: 1rem 0;
+    font-size: 14px;
+}
+
+.termos a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.btn-cadastrar {
+    width: 100%;
+    background-color: #0056b3;
+    color: white;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 1rem;
+}

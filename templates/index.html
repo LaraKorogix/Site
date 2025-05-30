@@ -34,11 +34,12 @@
         <!-- Ícones do menu ( login) -->
         <div class="icons">
             <div class="fas fa-bars" id="menu-btn"></div>
-            <div class="fas fa-user" id="login-btn"></div>
+            <a href="{{ url_for('exibir_cadastro') }}" class="fas fa-user" id="login-btn"></a>
+
         </div>
 
         <!-- Formulário de login -->
-        <form action="#" class="login-form">
+        <!-- <form action="#" class="login-form">
             <h3>Entrar</h3>
             <input type="email" placeholder="Digite seu email" class="box">
             <input type="password" placeholder="Digite sua senha" class="box">
@@ -54,7 +55,7 @@
                 <a href="#">Esqueceu a senha?</a>
                 <a href="#">Não tem uma conta?</a>
             </div>
-        </form>
+        </form> -->
 
     </header>
     <!-- Fim do cabeçalho -->

@@ -32,3 +32,12 @@ window.onload = () => {
     document.querySelector('.header').classList.add('active');
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const loginBtn = document.getElementById("login-btn");
+    if (loginBtn) {
+        loginBtn.addEventListener("click", function () {
+            window.location.href = "/cadastro";
+        });
+    }
+});
