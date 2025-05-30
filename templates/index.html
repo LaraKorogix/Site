@@ -38,25 +38,6 @@
 
         </div>
 
-        <!-- Formulário de login -->
-        <!-- <form action="#" class="login-form">
-            <h3>Entrar</h3>
-            <input type="email" placeholder="Digite seu email" class="box">
-            <input type="password" placeholder="Digite sua senha" class="box">
-            
-            <div class="lembrar-me">
-                <input type="checkbox" id="lembrar-me">
-                <label for="lembrar-me">Lembrar-me</label>
-            </div>
-
-            <input type="submit" value="Entrar" class="btn">
-
-            <div class="links">
-                <a href="#">Esqueceu a senha?</a>
-                <a href="#">Não tem uma conta?</a>
-            </div>
-        </form> -->
-
     </header>
     <!-- Fim do cabeçalho -->
 
@@ -124,7 +105,9 @@
     <p>A média de duração é de <strong>40 a 60 minutos</strong>, dependendo do porte e temperamento do pet.</p>
    
     <p>Agende o banho do seu pet e proporcione a ele uma experiência tranquila, segura e cheia de afeto! 🐶🐱</p>
-    <button class="btn-agendar">Agendar</button>
+    <button class="btn-agendar" onclick="window.location.href='{{ url_for('logincadastro') }}'">
+        Agendar
+    </button>
   </div>
 </section>
 
@@ -138,7 +121,9 @@
     <p>A média de duração é de <strong>50 a 70 minutos</strong>, podendo variar de acordo com o tipo de tosa e o porte do pet.</p>
     
     <p>Seu pet merece ficar ainda mais lindo e confortável! Agende uma tosa com quem entende de carinho e cuidado. ✨🐾</p>
-    <button class="btn-agendar">Agendar</button>
+    <button class="btn-agendar" onclick="window.location.href='{{ url_for('logincadastro') }}'">
+        Agendar
+    </button>
   </div>
 </section>
 
@@ -152,7 +137,9 @@
     <p>A média de duração é de <strong>15 a 30 minutos</strong>, incluindo triagem, aplicação e orientações ao tutor.</p>
     
     <p>Cuidar da saúde do seu pet é um gesto de amor. Mantenha as vacinas em dia e conte com a gente para isso! 💙🐶🐱</p>
-      <button class="btn-agendar">Agendar</button>
+      <button class="btn-agendar" onclick="window.location.href='{{ url_for('logincadastro') }}'">
+        Agendar
+    </button>
 </div>
 
   </div>

@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Conta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cadastro.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
     <header class="topo">
-        <div class="logo">Totó</div>
+    <div class="logo">
+        <i class="fas fa-paw"></i> Totó
+    </div>
     </header>
 
     <main class="form-container">
@@ -64,23 +67,14 @@
 
             <!-- Regras de senha -->
             <div class="senha-regras">
-                <p>Padrão de Senha</p>
+            <p>Padrão de Senha</p>
                 <ul>
                     <li>Mínimo 8 caracteres</li>
-                    <li>Letra Minúscula</li>
-                    <li>Letra Maiúscula</li>
-                    <li>Números</li>
                 </ul>
             </div>
 
-            <!-- Aceite de termos -->
-            <label class="termos">
-                <input type="checkbox" name="termos" required>
-                Concordo com os <a href="#">termos e condições</a>
-            </label>
-
             <!-- Botão -->
-             <button type="submit">Cadastrar</button>
+             <button class="btn-cadastrar">Cadastrar</button>
 
         </form>
     </main>
