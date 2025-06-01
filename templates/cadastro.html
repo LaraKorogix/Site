@@ -30,7 +30,8 @@
 
             <!-- Celular -->
             <label>Celular</label>
-            <input type="text" name="celular" placeholder="DDD + Celular" required>
+            <input type="text" name="celular" placeholder="DDD + Celular" required maxlength="11" inputmode="numeric">
+
 
             <!-- Data de nascimento -->
             <label>Data de nascimento </label>
@@ -38,33 +39,34 @@
 
             <!-- CPF -->
             <label>CPF</label>
-            <input type="text" name="cpf" placeholder="Digite o seu CPF" required>
+            <input type="text" name="cpf" placeholder="Digite o seu CPF" required maxlength="11" inputmode="numeric">
+
 
             <!-- Senhas -->
             <div class="senha-group">
                 <div>
                     <label>Senha</label>
-                    <input type="password" name="senha" placeholder="Digite sua senha" required>
+                    <input type="password" name="senha" placeholder="Digite sua senha" required minlength="8" maxlength="8">
+                    <input type="password" name="confirmar_senha" placeholder="Confirme sua senha" required minlength="8" maxlength="8">
                 </div>
-                <div>
-                    <label>Confirmar a senha</label>
-                    <input type="password" name="confirmar_senha" placeholder="Confirme sua senha" required>
-                </div>
-            </div>
+
+            </div>  
 
             <!-- Regras de senha -->
             <div class="senha-regras">
             <p>Padrão de Senha</p>
                 <ul>
-                    <li>Mínimo 8 caracteres</li>
+                    <li>Máximo 8 caracteres</li>
                 </ul>
             </div>
 
-            <!-- Botão -->
+            <!-- Botão -->  
              <button class="btn-cadastrar">Cadastrar</button>
 
         </form>
     </main>
+
+    <script src="{{ url_for('static', filename='js/cadastro.js') }}"></script>
 
 </body>
 </html>

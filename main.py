@@ -38,7 +38,7 @@ def registrar():
     termos = request.form.get('termos')
 
     print(f"Novo cadastro: {nome}, {email}, {cpf}")
-    return redirect(url_for('home'))
+    return redirect(url_for('logincadastro'))
 
 # Página principal
 @app.route('/home')
