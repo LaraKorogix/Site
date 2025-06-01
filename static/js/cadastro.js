@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('submit', function (e) {
         // Senha com exatamente 8 caracteres
-        if (senha.value.length !== 8) {
+        if (senha.value.length < 4 || senha.value.length > 8) {
             e.preventDefault();
-            alert('A senha deve conter exatamente 8 caracteres.');
+            alert('A senha deve conter entre 4 e 8 caracteres.');
             senha.focus();
             return;
         }
