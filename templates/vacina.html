@@ -6,22 +6,20 @@
 
   <!-- Estilo CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/vacinacoes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/vacina.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Ícones Boxicons -->
   <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
 </head>
 <body>
 
   <!-- SIDEBAR -->
   <section id="sidebar">
-      <a href="home.html" class="brand">
-        <i class="fas fa-paw"></i>
-        <span class="text">Totó</span>
-      </a>
+    <a href="{{ url_for('home') }}" class="brand">
+      <i class="fas fa-paw"></i>
+      <span class="text">Totó</span>
+    </a>
     <ul class="side-menu top">
-      <li>
+      <li>  
         <a href="{{ url_for('home') }}">
           <i class='bx bxs-dashboard'></i>
           <span class="text">Menu</span>
@@ -50,31 +48,63 @@
 
   <!-- CONTEÚDO -->
   <section id="content">
-
-    <!-- NAVBAR -->
-    
-
-    <!-- MAIN -->
     <main>
       <div class="head-title">
         <div class="left">
-          <h1>Histórico de Vacinação</h1>
+          <h1>Agendar Vacinação</h1>
         </div>
       </div>
 
-      <div class="main-content">
-        <!-- Lista de Vacinações -->
+      <!-- Blocos lado a lado -->
+      <div class="container-vacina">
+
+        <!-- Formulário de Cadastro de Vacina -->
+        <div class="formulario-vacina">
+          <h3>Cadastrar Nova Vacina</h3>
+          <form action="{{ url_for('cadastrar_vacina') }}" method="POST">
+            <label for="nomePet">Nome do Pet:</label>
+            <input type="text" id="nomePet" name="nomePet" required>
+
+            <label for="vacina">Tipo da Vacina:</label>
+            <input type="text" id="vacina" name="vacina" required>
+
+            <label for="data">Data da Aplicação:</label>
+            <input type="date" id="data" name="data" required>
+
+            <label for="proxima_data">Próxima Aplicação:</label>
+            <input type="date" id="proxima_data" name="proxima_data">
+
+            <button type="submit">Registrar Vacina</button>
+          </form>
+        </div>
+
+        <!-- Lista de Vacinas -->
         <div class="lista-agendamentos">
           <h3>Vacinas Aplicadas</h3>
-          <div id="lista-vacinas"></div>
+          {% if vacinas %}
+          <ul>
+            {% for v in vacinas %}
+              <li>
+                <strong>{{ v.nome_pet }}</strong>
+                <span>
+                  – {{ v.vacina }} em {{ v.data }}
+                  {% if v.proxima_data %}
+                    | Próxima: {{ v.proxima_data }}
+                  {% endif %}
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>Seu pet ainda não tem vacina registrada nesta clínica.</p>
+          {% endif %}
         </div>
+
       </div>
     </main>
   </section>
 
   <!-- SCRIPT -->
-		<script src="{{ url_for('static', filename='js/vacina.js') }}"></script>
-
-
+  <script src="{{ url_for('static', filename='js/vacina.js') }}"></script>
 </body>
 </html>

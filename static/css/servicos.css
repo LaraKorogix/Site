@@ -1,144 +1,161 @@
-/* === FONTES === */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* === RESET GLOBAL === */
+/* RESET */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
-
 a {
-  text-decoration: none;
+	text-decoration: none;
 }
-
 li {
-  list-style: none;
+	list-style: none;
 }
-
 html {
-  overflow-x: hidden;
+	overflow-x: hidden;
 }
 
-/* === VARIÁVEIS DE TEMA === */
 :root {
-  --poppins: 'Poppins', sans-serif;
-  --lato: 'Lato', sans-serif;
+	--poppins: 'Poppins', sans-serif;
+	--lato: 'Lato', sans-serif;
 
-  --light: #F9F9F9;
-  --green: #39c90d;
-  --green-2: #558a00;
-  --grey: #eee;
-  --dark-grey: #AAAAAA;
-  --dark: #342E37;
-  --red: #bd1b16;
-  --yellow: #FFCE26;
-  --light-yellow: #FFF2C6;
-  --orange: #ff6131;
-  --light-orange: #FFE0D3;
+	--light: #F9F9F9;
+	--green: #39c90d;
+	--green-2: #2e7d00;
+	--grey: #eee;
+	--dark-grey: #AAAAAA;
+	--dark: #342E37;
+	--red: #bd1b16;
+	--yellow: #FFCE26;
+	--light-yellow: #FFF2C6;
+	--orange: #ff6131;
+	--light-orange: #FFE0D3;
 }
 
-/* === DARK MODE === */
 body.dark {
-  --light: #0C0C1E;
-  --grey: #060714;
-  --dark: #FBFBFB;
+	--light: #0C0C1E;
+	--grey: #060714;
+	--dark: #FBFBFB;
 }
 
-/* === ESTILOS GERAIS === */
 body {
-  background: var(--grey);
-  font-family: var(--poppins);
-  overflow-x: hidden;
+	background: var(--grey);
+	font-family: var(--poppins);
+	overflow-x: hidden;
 }
 
-/* === CONTEÚDO PRINCIPAL === */
-.main-content {
-  display: flex;
-  gap: 2rem;
-  justify-content: space-between;
-  margin-top: 2rem;
-  flex-wrap: wrap;
+/* CONTAINER FLEX COMO NA VACINAÇÃO */
+.container-servico {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 32px;
+	margin-top: 30px;
+	padding: 0 24px;
+	flex-wrap: wrap;
 }
 
-/* === FORMULÁRIO E LISTA DE AGENDAMENTOS === */
-.form-servico,
-.lista-agendamentos {
-  background: var(--light);
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  flex: 1;
-  min-width: 320px;
+/* BLOCO DO FORMULÁRIO E LISTA */
+.container-servico .form-servico,
+.container-servico .lista-agendamentos {
+	flex: 1 1 48%;
+	min-width: 300px;
+	background: var(--light);
+	padding: 32px;
+	border-radius: 16px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-.form-servico {
-  flex: 1.2;
+/* FORMULÁRIO */
+.form-servico form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
 
-.lista-agendamentos {
-  flex: 1;
+.form-servico label {
+	font-weight: 500;
+	color: var(--dark);
 }
 
-/* === TÍTULOS E RÓTULOS === */
-.form-servico label,
-.lista-agendamentos h3 {
-  font-weight: 600;
-  margin-top: 1rem;
-  color: var(--dark);
-}
-
-/* === CAMPOS DO FORMULÁRIO === */
 .form-servico input,
 .form-servico select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid var(--grey);
-  background-color: var(--grey);
-  font-family: var(--poppins);
+	padding: 10px 14px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	background: #fff;
+	font-size: 15px;
+	transition: 0.3s;
+	font-family: var(--poppins);
 }
 
-/* === BOTÃO DE AGENDAR === */
+.form-servico input:focus,
+.form-servico select:focus {
+	outline: none;
+	border-color: var(--green);
+	box-shadow: 0 0 0 2px rgba(57, 201, 13, 0.2);
+}
+
 .form-servico button {
-  margin-top: 1.5rem;
-  background: var(--green);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
+	background-color: var(--green);
+	color: white;
+	font-weight: 600;
+	padding: 12px;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background 0.3s ease;
 }
 
 .form-servico button:hover {
-  background: var(--green-2);
+	background-color: var(--green-2);
 }
 
-/* === AGENDAMENTOS LISTADOS === */
-.agendamento {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-left: 5px solid var(--orange);
-  background: var(--grey);
-  border-radius: 8px;
+/* LISTA DE SERVIÇOS */
+.lista-agendamentos h3 {
+	font-size: 22px;
+	font-weight: 600;
+	color: var(--dark);
+	margin-bottom: 24px;
+	border-left: 4px solid var(--green);
+	padding-left: 12px;
 }
 
-.agendamento strong {
-  display: block;
-  color: var(--dark);
+.lista-agendamentos ul {
+	list-style: none;
+	padding: 0;
 }
 
-/* === RESPONSIVIDADE === */
-@media (max-width: 900px) {
-  .main-content {
-    flex-direction: column;
-  }
+.lista-agendamentos li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--grey);
+	padding: 12px 18px;
+	margin-bottom: 12px;
+	border-radius: 10px;
+	color: var(--dark);
+	font-size: 15px;
+	box-shadow: inset 0 0 0 1px #ddd;
+}
 
-  .form-servico,
-  .lista-agendamentos {
-    width: 100%;
-  }
+.lista-agendamentos li span {
+	font-weight: 500;
+	color: var(--dark-grey);
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+	.container-servico {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.container-servico .form-servico,
+	.container-servico .lista-agendamentos {
+		width: 100%;
+		max-width: 600px;
+	}
 }

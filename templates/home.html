@@ -4,14 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<!-- Boxicons -->
+	<!-- Boxicons e Font Awesome -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 	<!-- Estilo CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 
 	<title>Totó Pet Shop</title>
+
 </head>
 <body>
 
@@ -47,21 +48,16 @@
 				</a>
 			</li>
 		</ul>
-
 	</section>
 	<!-- FIM SIDEBAR -->
 
-
 	<!-- CONTEÚDO PRINCIPAL -->
 	<section id="content">
-
-		
-
-		<!-- MAIN -->
 		<main>
 			<div class="head-title">
 				<div class="left">
 					<h1>Menu</h1>
+					<button id="abrirModal" class="btn-cadastrar-pet">+ Cadastrar Pet</button>
 				</div>
 			</div>
 
@@ -73,52 +69,47 @@
 					<table>
 						<thead>
 							<tr>
-								<th>Usuário</th>
-								<th>Data do Pedido</th>
-								<th>Status</th>
+								<th>Pet</th>
+								<th>Serviço</th>
+								<th>Data</th>
+								<th>Hora</th>
 							</tr>
 						</thead>
 						<tbody>
+							{% for ag in agendamentos %}
 							<tr>
-								<td>
-									<p>Admin</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completo</span></td>
+								<td>{{ ag.nome_pet }}</td>
+								<td>{{ ag.servico }}</td>
+								<td>{{ ag.data }}</td>
+								<td>{{ ag.hora }}</td>
 							</tr>
+							{% else %}
 							<tr>
-								<td>
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pendente</span></td>
+								<td colspan="4">Nenhum serviço agendado ainda.</td>
 							</tr>
-							<tr>
-								<td>
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pendente</span></td>
-							</tr>
-							<tr>
-								<td>
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completo</span></td>
-							</tr>
+							{% endfor %}
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</main>
-		<!-- FIM MAIN -->
-
 	</section>
-	<!-- FIM CONTEÚDO PRINCIPAL -->
 
-	<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+	<!-- MODAL -->
+	<div id="modalPet" class="modal">
+		<div class="modal-content">
+			<span class="close" id="fecharModal">&times;</span>
+			<h3>Cadastrar Novo Pet</h3>
+			<form id="formCadastroPet">
+				<input type="text" name="nome_pet" placeholder="Nome do Pet" required>
+				<input type="text" name="especie" placeholder="Espécie (ex: cão, gato)" required>
+				<input type="text" name="raca" placeholder="Raça" required>
+				<button type="submit">Cadastrar</button>
+			</form>
+			<p id="mensagem-sucesso" style="color: green; display: none;">Pet cadastrado com sucesso!</p>
+		</div>
+	</div>
+  <!-- SCRIPT -->
+  <script src="{{ url_for('static', filename='js/homescript.js') }}"></script>
 </body>
 </html>
-
-===

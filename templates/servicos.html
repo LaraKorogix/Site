@@ -4,55 +4,48 @@
   <meta charset="UTF-8">
   <title>Serviços | Totó Pet Shop</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <link rel="stylesheet" href="{{ url_for('static', filename='css/servicos.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-
-
+</head>
 <body>
-  <!-- SIDEBAR -->
-    <section id="sidebar">
-      <a href="home.html" class="brand">
-        <i class="fas fa-paw"></i>
-        <span class="text">Totó</span>
-      </a>
-      <ul class="side-menu top">
-        <li class="active">
-          <a href="{{ url_for('home') }}">
-            <i class='bx bxs-dashboard'></i>
-            <span class="text">Menu</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ url_for('servico') }}">
-            <i class='bx bxs-shopping-bag-alt'></i>
-            <span class="text">Serviços</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ url_for('vacina') }}">
-            <i class='bx bxs-doughnut-chart'></i>
-            <span class="text">Vacina</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ url_for('index') }}" class="logout">
-            <i class='bx bxs-log-out-circle'></i>
-            <span class="text">Logout</span>
-          </a>
-        </li>
-      </ul>
 
-    </section>
+  <!-- SIDEBAR -->
+  <section id="sidebar">
+    <a href="{{ url_for('home') }}" class="brand">
+      <i class="fas fa-paw"></i>
+      <span class="text">Totó</span>
+    </a>
+    <ul class="side-menu top">
+      <li>
+        <a href="{{ url_for('home') }}">
+          <i class='bx bxs-dashboard'></i>
+          <span class="text">Menu</span>
+        </a>
+      </li>
+      <li class="active">
+        <a href="{{ url_for('servico') }}">
+          <i class='bx bxs-shopping-bag-alt'></i>
+          <span class="text">Serviços</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('vacina') }}">
+          <i class='bx bxs-doughnut-chart'></i>
+          <span class="text">Vacina</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('index') }}" class="logout">
+          <i class='bx bxs-log-out-circle'></i>
+          <span class="text">Logout</span>
+        </a>
+      </li>
+    </ul>
+  </section>
 
   <!-- CONTEÚDO -->
   <section id="content">
-
-    <!-- NAVBAR -->
-    
-
-    <!-- MAIN -->
     <main>
       <div class="head-title">
         <div class="left">
@@ -60,15 +53,23 @@
         </div>
       </div>
 
-      <div class="main-content">
-        <!-- Formulário -->
+      <!-- BLOCOS LADO A LADO -->
+      <div class="container-servico">
+
+        <!-- Formulário de Agendamento -->
         <div class="form-servico">
-          <form id="form-agendamento">
+          <h3>Cadastro de Serviço</h3>
+          <form method="POST" action="{{ url_for('cadastrar_servico') }}" id="form-agendamento">
             <label for="pet">Nome do Pet:</label>
-            <input type="text" id="pet" required>
+            <select name="pet" id="pet" required>
+              <option value="">Selecione um pet</option>
+              {% for pet in pets %}
+                <option value="{{ pet.nome }}">{{ pet.nome }}</option>
+              {% endfor %}
+            </select>
 
             <label for="servico">Serviço:</label>
-            <select id="servico" required>
+            <select name="servico" id="servico" required>
               <option value="">Selecione</option>
               <option value="Banho">Banho</option>
               <option value="Tosa">Tosa</option>
@@ -76,24 +77,36 @@
             </select>
 
             <label for="data">Data:</label>
-            <input type="date" id="data" required>
+            <input type="date" name="data" id="data" required>
 
             <label for="hora">Horário:</label>
-            <input type="time" id="hora" min="08:00" max="18:00" required>
+            <input type="time" name="hora" id="hora" min="08:00" max="18:00" required>
 
             <button type="submit">Agendar</button>
           </form>
         </div>
 
-        <!-- Lista de Agendamentos -->
+        <!-- Lista de Serviços Agendados -->
         <div class="lista-agendamentos">
           <h3>Serviços Agendados</h3>
-          <div id="lista-agendados"></div>
+          <ul id="lista-agendados">
+            {% if agendamentos %}
+              {% for a in agendamentos %}
+                <li>
+                  <strong>{{ a.nome_pet }}</strong>
+                  <span>– {{ a.servico }} em {{ a.data }} às {{ a.hora }}</span>
+                </li>
+              {% endfor %}
+            {% else %}
+              <li id="nenhum-agendamento">Nenhum serviço agendado ainda.</li>
+            {% endif %}
+          </ul>
         </div>
+
       </div>
     </main>
   </section>
-  <script src="{{ url_for('static', filename='js/servico.js') }}"></script>
 
+  <script src="{{ url_for('static', filename='js/servicos.js') }}"></script>
 </body>
 </html>

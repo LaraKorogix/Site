@@ -1,39 +1,36 @@
-const form = document.getElementById('form-agendamento');
-    const lista = document.getElementById('lista-agendados');
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('form-agendamento');
+  const lista = document.getElementById('lista-agendados');
 
-    function salvarAgendamento(agendamento) {
-      let agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-      agendamentos.push(agendamento);
-      localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
-      exibirAgendamentos();
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const pet = document.getElementById('pet').value;
+    const servico = document.getElementById('servico').value;
+    const data = document.getElementById('data').value;
+    const hora = document.getElementById('hora').value;
+
+    if (!pet || !servico || !data || !hora) {
+      alert("Preencha todos os campos!");
+      return;
     }
 
-    function exibirAgendamentos() {
-      const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-      lista.innerHTML = '';
-      agendamentos.forEach(a => {
-        const div = document.createElement('div');
-        div.classList.add('agendamento');
-        div.innerHTML = `
-          <strong>Pet:</strong> ${a.pet}
-          <strong>Serviço:</strong> ${a.servico}
-          <strong>Data:</strong> ${a.data}
-          <strong>Horário:</strong> ${a.hora}
-        `;
-        lista.appendChild(div);
-      });
+    // Remove a mensagem "Nenhum serviço agendado ainda" se existir
+    const nenhumAgendamento = document.getElementById('nenhum-agendamento');
+    if (nenhumAgendamento) {
+      nenhumAgendamento.remove();
     }
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const agendamento = {
-        pet: form.pet.value,
-        servico: form.servico.value,
-        data: form.data.value,
-        hora: form.hora.value
-      };
-      salvarAgendamento(agendamento);
-      form.reset();
-    });
+    // Cria item de lista estilizado
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${pet}</strong>
+      <span>– ${servico} em ${data} às ${hora}</span>
+    `;
 
-    document.addEventListener('DOMContentLoaded', exibirAgendamentos);
+    lista.appendChild(li);
+
+    // Limpa o formulário após submissão
+    form.reset();
+  });
+});
