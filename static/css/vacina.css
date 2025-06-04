@@ -201,6 +201,14 @@ body {
 	font-size: 15px;
 	transition: 0.3s;
 }
+.formulario-vacina select {
+	padding: 10px 14px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	background: #fff;
+	font-size: 15px;
+	transition: 0.3s;
+}
 .formulario-vacina input:focus {
 	outline: none;
 	border-color: var(--orange);

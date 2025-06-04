@@ -24,13 +24,13 @@
         </a>
       </li>
       <li class="active">
-        <a href="{{ url_for('servico') }}">
+        <a href="{{ url_for('servico_page') }}">
           <i class='bx bxs-shopping-bag-alt'></i>
           <span class="text">Serviços</span>
         </a>
       </li>
       <li>
-        <a href="{{ url_for('vacina') }}">
+        <a href="{{ url_for('vacina_page') }}">
           <i class='bx bxs-doughnut-chart'></i>
           <span class="text">Vacina</span>
         </a>
@@ -58,48 +58,46 @@
 
         <!-- Formulário de Agendamento -->
         <div class="form-servico">
-          <h3>Cadastro de Serviço</h3>
-          <form method="POST" action="{{ url_for('cadastrar_servico') }}" id="form-agendamento">
-            <label for="pet">Nome do Pet:</label>
-            <select name="pet" id="pet" required>
-              <option value="">Selecione um pet</option>
-              {% for pet in pets %}
-                <option value="{{ pet.nome }}">{{ pet.nome }}</option>
-              {% endfor %}
-            </select>
+            <h3>Cadastro de Serviço</h3>
+            <form method="POST" action="{{ url_for('cadastrar_servico_agendamento') }}" id="form-agendamento">
+                
+                <label for="pet_id_select">Nome do Pet:</label>
+                <select name="pet_id" id="pet_id_select" required> <option value="">Selecione um pet</option>
+                    {% for p_item in pets %} {# Usando p_item para evitar conflito se 'pet' for usado em outro lugar #}
+                        <option value="{{ p_item.id }}">{{ p_item.nome }}</option> {% else %}
+                        <option value="" disabled>Nenhum pet cadastrado para este cliente</option>
+                    {% endfor %}
+                </select>
 
-            <label for="servico">Serviço:</label>
-            <select name="servico" id="servico" required>
-              <option value="">Selecione</option>
-              <option value="Banho">Banho</option>
-              <option value="Tosa">Tosa</option>
-              <option value="Vacinação">Vacinação</option>
-            </select>
+                <label for="servico_id_select">Serviço:</label>
+                <select name="servico_id" id="servico_id_select" required> <option value="">Selecione um serviço</option>
+                    {% for s_item in servicos %} {# Usando s_item #}
+                        {# Assumindo que cada item em 'servicos' é um dicionário com 'id', 'nome', 'preco' #}
+                        <option value="{{ s_item.id }}">{{ s_item.nome }} (R$ {{ "%.2f"|format(s_item.preco) }})</option> {% else %}
+                        <option value="" disabled>Nenhum serviço disponível</option>
+                    {% endfor %}
+                </select>
 
-            <label for="data">Data:</label>
-            <input type="date" name="data" id="data" required>
-
-            <label for="hora">Horário:</label>
-            <input type="time" name="hora" id="hora" min="08:00" max="18:00" required>
-
-            <button type="submit">Agendar</button>
-          </form>
+                <label for="data_agendamento">Data:</label>
+                <input type="date" name="data" id="data_agendamento" required> <label for="hora_agendamento">Horário:</label>
+                <input type="time" name="hora" id="hora_agendamento" min="08:00" max="18:00" required> <button type="submit">Agendar</button>
+            </form>
         </div>
 
         <!-- Lista de Serviços Agendados -->
         <div class="lista-agendamentos">
           <h3>Serviços Agendados</h3>
           <ul id="lista-agendados">
-            {% if agendamentos %}
-              {% for a in agendamentos %}
-                <li>
-                  <strong>{{ a.nome_pet }}</strong>
-                  <span>– {{ a.servico }} em {{ a.data }} às {{ a.hora }}</span>
-                </li>
-              {% endfor %}
-            {% else %}
-              <li id="nenhum-agendamento">Nenhum serviço agendado ainda.</li>
-            {% endif %}
+              {% if agendamentos %}
+                {% for a in agendamentos %}
+                  <li>
+                    <strong>{{ a.nome_pet }}</strong>
+                    <span>– {{ a.servico }} em {{ a.data }} às {{ a.hora }}</span>
+                  </li>
+                {% endfor %}
+              {% else %}
+                <li id="nenhum-agendamento">Nenhum serviço agendado ainda.</li>
+              {% endif %}
           </ul>
         </div>
 

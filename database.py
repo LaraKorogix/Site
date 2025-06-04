@@ -1,3 +1,4 @@
+# database.py
 import sqlite3
 from datetime import datetime
 
@@ -14,7 +15,7 @@ class Database:
         conn = self._get_db_conn()
         cursor = conn.cursor()
 
-        # Tabela Clientes (mantida da versão anterior)
+        # Tabela Clientes
         cursor.execute('''CREATE TABLE IF NOT EXISTS clientes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome VARCHAR(100) NOT NULL,
@@ -26,25 +27,26 @@ class Database:
             senha VARCHAR(100) 
         )''')
 
-        # Tabela Pets (mantida da versão anterior)
+        # Tabela Pets - A coluna 'idade' continua existindo, mas será opcional na inserção
         cursor.execute('''CREATE TABLE IF NOT EXISTS pets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome VARCHAR(100) NOT NULL,
             especie VARCHAR(100) NOT NULL,
             raca VARCHAR(100) NOT NULL,
-            idade INTEGER,
+            idade INTEGER, 
             cliente_id INTEGER,
             FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
         )''')
 
-        # Tabela Servicos (mantida da versão anterior)
+        # ... (restante das tabelas: servicos, agendamentos, registros_vacinas) ...
+        # (O código das outras tabelas permanece o mesmo da sua versão anterior)
+
         cursor.execute('''CREATE TABLE IF NOT EXISTS servicos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome VARCHAR(100) NOT NULL UNIQUE,
             preco DECIMAL(9,2) NOT NULL
         )''')
 
-        # Tabela Agendamentos (mantida da versão anterior)
         cursor.execute('''CREATE TABLE IF NOT EXISTS agendamentos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pet_id INTEGER,
@@ -54,7 +56,6 @@ class Database:
             FOREIGN KEY (servico_id) REFERENCES servicos(id) ON DELETE CASCADE
         )''')
 
-        # NOVA Tabela para Registros de Vacinas
         cursor.execute('''CREATE TABLE IF NOT EXISTS registros_vacinas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pet_id INTEGER NOT NULL,
@@ -63,21 +64,19 @@ class Database:
             proxima_data_aplicacao DATE,
             FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE
         )''')
-
+        
         conn.commit()
         conn.close()
         print("Tabelas (incluindo registros_vacinas) verificadas/criadas pela classe Database.")
 
     def popular_servicos_iniciais(self):
+        # ... (código de popular_servicos_iniciais permanece o mesmo) ...
         servicos_padrao = [
-            ("Banho", 26.00), # Preço ajustado conforme seu exemplo
+            ("Banho", 26.00),
             ("Tosa Higiênica", 25.00),
             ("Tosa Completa", 50.00),
             ("Consulta Veterinária", 50.00),
-            ("Aplicação de Vacina", 15.00) # Custo do serviço de aplicar, a vacina em si pode ter outro custo ou ser parte do nome.
-                                         # Ou, se o preço da vacina varia, pode ser registrado no momento.
-                                         # O valor 85 que você mencionou pode ser o nome_vacina + custo,
-                                         # mas para o serviço em si, vamos colocar um valor simbólico aqui.
+            ("Aplicação de Vacina", 15.00)
         ]
         conn = self._get_db_conn()
         cursor = conn.cursor()
@@ -90,7 +89,9 @@ class Database:
         conn.close()
         print("Serviços iniciais verificados/populados pela classe Database.")
 
+
     # --- Métodos CRUD para Clientes ---
+    # ... (cadastrar_cliente, listar_clientes, buscar_cliente_id_por_cpf permanecem os mesmos) ...
     def cadastrar_cliente(self, nome, cpf, telefone, email, genero, data_nascimento, senha):
         conn = self._get_db_conn()
         cursor = conn.cursor()
@@ -114,7 +115,6 @@ class Database:
         return [dict(cliente) for cliente in clientes]
 
     def buscar_cliente_id_por_cpf(self, cpf):
-        """Busca o ID de um cliente pelo CPF."""
         conn = self._get_db_conn()
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM clientes WHERE cpf = ?", (cpf,))
@@ -123,29 +123,37 @@ class Database:
         return cliente['id'] if cliente else None
 
     # --- Métodos CRUD para Pets ---
-    def adicionar_pet(self, nome, especie, raca, idade, cliente_id):
+    # Alterado: 'idade' é agora um parâmetro opcional com default None
+    def adicionar_pet(self, nome, especie, raca, cliente_id, idade=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO pets (nome, especie, raca, cliente_id) VALUES (?, ?, ?, ?)",
-                           (nome, especie, raca, cliente_id))
+            # A query continua incluindo 'idade', que será NULL se 'idade' for None
+            cursor.execute("INSERT INTO pets (nome, especie, raca, cliente_id, idade) VALUES (?, ?, ?, ?, ?)",
+                           (nome, especie, raca, cliente_id, idade))
             conn.commit()
             return cursor.lastrowid
         except Exception as e:
-            print(f"Erro ao adicionar pet: {e}")
+            print(f"Erro ao adicionar pet no DB: {e}")
             return None
         finally:
             conn.close()
 
-    def listar_pets_simples(self):
+    # ... (listar_pets_simples, buscar_pet_por_nome permanecem os mesmos) ...
+    def listar_pets_simples(self, cliente_id=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
-        cursor.execute("SELECT id, nome FROM pets")
+        query = "SELECT id, nome FROM pets"
+        params = []
+        if cliente_id:
+            query += " WHERE cliente_id = ?"
+            params.append(cliente_id)
+        cursor.execute(query, tuple(params))
         pets = cursor.fetchall()
         conn.close()
         return [dict(pet) for pet in pets]
 
-    def buscar_pet_por_nome(self, nome_pet, cliente_id=None): # Pode opcionalmente filtrar por cliente
+    def buscar_pet_por_nome(self, nome_pet, cliente_id=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         query = "SELECT id FROM pets WHERE nome = ?"
@@ -160,7 +168,8 @@ class Database:
         return pet['id'] if pet else None
 
     # --- Métodos CRUD para Tipos de Serviços ---
-    def listar_servicos(self): # Lista os tipos de serviço e seus preços
+    # ... (listar_servicos, buscar_servico_por_nome permanecem os mesmos) ...
+    def listar_servicos(self):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         cursor.execute("SELECT id, nome, preco FROM servicos")
@@ -174,63 +183,84 @@ class Database:
         cursor.execute("SELECT id, preco FROM servicos WHERE nome = ? LIMIT 1", (nome_servico,))
         servico = cursor.fetchone()
         conn.close()
-        return servico if servico else None # Retorna o Row (id, preco) ou None
+        return servico 
 
     # --- Métodos CRUD para Agendamentos ---
+    # ... (agendar_servico, listar_agendamentos_detalhados, _agendar_servico_comum, etc. permanecem os mesmos) ...
     def agendar_servico(self, pet_id, servico_id, data_hora_str):
+        print(f"DB DEBUG (agendar_servico): Recebido pet_id={pet_id}, servico_id={servico_id}, data_hora_str='{data_hora_str}'")
         conn = self._get_db_conn()
         cursor = conn.cursor()
         try:
-            dt_obj = datetime.strptime(data_hora_str, "%Y-%m-%d %H:%M") # Valida/converte formato
+            # Verifica se os IDs existem nas tabelas referenciadas (BOA PRÁTICA)
+            cursor.execute("SELECT id FROM pets WHERE id = ?", (pet_id,))
+            if not cursor.fetchone():
+                print(f"DB DEBUG ERROR (agendar_servico): pet_id {pet_id} não encontrado na tabela pets.")
+                return False
+            
+            cursor.execute("SELECT id FROM servicos WHERE id = ?", (servico_id,))
+            if not cursor.fetchone():
+                print(f"DB DEBUG ERROR (agendar_servico): servico_id {servico_id} não encontrado na tabela servicos.")
+                return False
+
+            dt_obj = datetime.strptime(data_hora_str, "%Y-%m-%d %H:%M") # Espera YYYY-MM-DD HH:MM
             data_hora_sqlite = dt_obj.strftime("%Y-%m-%d %H:%M:%S")
+            print(f"DB DEBUG (agendar_servico): data_hora_sqlite formatada para INSERT: '{data_hora_sqlite}'")
 
             cursor.execute("INSERT INTO agendamentos (pet_id, servico_id, data_hora) VALUES (?, ?, ?)",
                            (pet_id, servico_id, data_hora_sqlite))
             conn.commit()
+            print(f"DB DEBUG (agendar_servico): INSERT e COMMIT realizados com SUCESSO.")
             return True
-        except ValueError:
-            print(f"Erro: Formato de data/hora inválido: '{data_hora_str}'. Use YYYY-MM-DD HH:MM")
+        except ValueError: # Erro na conversão de data/hora
+            print(f"DB DEBUG ERROR (agendar_servico): ValueError ao processar data_hora_str='{data_hora_str}'. Formato esperado YYYY-MM-DD HH:MM")
             return False
-        except Exception as e:
-            print(f"Erro ao agendar serviço: {e}")
+        except sqlite3.IntegrityError as e: # Erro de integridade (ex: FK não existe, mas a verificação acima deveria pegar)
+             print(f"DB DEBUG ERROR (agendar_servico): sqlite3.IntegrityError: {e}")
+             return False
+        except Exception as e: # Outras exceções do DB
+            print(f"DB DEBUG ERROR (agendar_servico): Exceção geral no DB: {e}")
+            import traceback # Para mais detalhes do erro
+            print(traceback.format_exc())
             return False
         finally:
-            conn.close()
+            if conn: # Garante que conn existe antes de tentar fechar
+                conn.close()
 
-    def listar_agendamentos_detalhados(self):
-        """Lista agendamentos com detalhes do pet, serviço e cliente."""
+    def listar_agendamentos_detalhados(self, cliente_id=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
-        # Modificado para incluir o nome do cliente
-        cursor.execute('''
+        base_query = '''
             SELECT 
                 a.id as agendamento_id, 
                 p.nome as nome_pet, 
-                s.nome as nome_servico, 
+                s.nome as nome_servico,
                 s.preco as valor_servico,
-                strftime('%Y-%m-%d %H:%M', a.data_hora) as data_hora_formatada,
+                strftime('%Y-%m-%d', a.data_hora) as data,
+                strftime('%H:%M', a.data_hora) as hora,
                 c.nome as nome_cliente,
                 c.cpf as cpf_cliente
             FROM agendamentos a
             JOIN pets p ON a.pet_id = p.id
             JOIN servicos s ON a.servico_id = s.id
             JOIN clientes c ON p.cliente_id = c.id
-            ORDER BY a.data_hora DESC
-        ''')
+        '''
+        params = []
+        if cliente_id:
+            base_query += " WHERE c.id = ?"
+            params.append(cliente_id)
+        base_query += " ORDER BY a.data_hora DESC"
+        cursor.execute(base_query, tuple(params))
         agendamentos = cursor.fetchall()
         conn.close()
         return [dict(ag) for ag in agendamentos]
 
-    # --- Métodos para agendamento rápido de serviços comuns ---
     def _agendar_servico_comum(self, pet_id, nome_servico_comum, data_hora_str):
         servico_info = self.buscar_servico_por_nome(nome_servico_comum)
         if not servico_info:
-            print(f"Erro: Tipo de serviço '{nome_servico_comum}' não encontrado na tabela de serviços.")
+            print(f"Erro: Tipo de serviço '{nome_servico_comum}' não encontrado.")
             return False
-        
         servico_id = servico_info['id']
-        # O preço já está na tabela de serviços, então não precisamos passá-lo aqui.
-        # A função agendar_servico não lida com preço customizado.
         return self.agendar_servico(pet_id, servico_id, data_hora_str)
 
     def agendar_tosa_higienica(self, pet_id, data_hora_str):
@@ -242,26 +272,22 @@ class Database:
     def agendar_banho(self, pet_id, data_hora_str):
         return self._agendar_servico_comum(pet_id, "Banho", data_hora_str)
     
-    # Para a "vacina" como um serviço agendável (custo de aplicação):
     def agendar_aplicacao_vacina(self, pet_id, data_hora_str):
         return self._agendar_servico_comum(pet_id, "Aplicação de Vacina", data_hora_str)
 
     # --- Métodos CRUD para Registros de Vacinas ---
+    # ... (cadastrar_registro_vacina, listar_registros_vacinas permanecem os mesmos) ...
     def cadastrar_registro_vacina(self, pet_id, nome_vacina, data_aplicacao_str, proxima_data_aplicacao_str=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         try:
-            # Validar e formatar datas (ex: YYYY-MM-DD)
-            datetime.strptime(data_aplicacao_str, "%Y-%m-%d") # Valida formato
-            if proxima_data_aplicacao_str:
-                datetime.strptime(proxima_data_aplicacao_str, "%Y-%m-%d") # Valida formato
+            datetime.strptime(data_aplicacao_str, "%Y-%m-%d")
+            if proxima_data_aplicacao_str and proxima_data_aplicacao_str.strip() != "":
+                datetime.strptime(proxima_data_aplicacao_str, "%Y-%m-%d")
             else:
-                proxima_data_aplicacao_str = None # Garante que seja NULL se vazio
-
-            cursor.execute("""
-                INSERT INTO registros_vacinas (pet_id, nome_vacina, data_aplicacao, proxima_data_aplicacao)
-                VALUES (?, ?, ?, ?)
-            """, (pet_id, nome_vacina, data_aplicacao_str, proxima_data_aplicacao_str))
+                proxima_data_aplicacao_str = None
+            cursor.execute("INSERT INTO registros_vacinas (pet_id, nome_vacina, data_aplicacao, proxima_data_aplicacao) VALUES (?, ?, ?, ?)",
+                           (pet_id, nome_vacina, data_aplicacao_str, proxima_data_aplicacao_str))
             conn.commit()
             return True
         except ValueError:
@@ -274,7 +300,6 @@ class Database:
             conn.close()
 
     def listar_registros_vacinas(self, pet_id=None):
-        """Lista todos os registros de vacinas ou para um pet específico."""
         conn = self._get_db_conn()
         cursor = conn.cursor()
         query = """
@@ -289,7 +314,6 @@ class Database:
             query += " WHERE rv.pet_id = ?"
             params.append(pet_id)
         query += " ORDER BY rv.data_aplicacao DESC"
-        
         cursor.execute(query, tuple(params))
         registros = cursor.fetchall()
         conn.close()

@@ -1,110 +1,107 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Vacinações | Totó Pet Shop</title>
-
-  <!-- Estilo CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/vacina.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <meta charset="UTF-8">
+    <title>Vacinações | Totó Pet Shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vacina.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
 </head>
 <body>
 
-  <!-- SIDEBAR -->
-  <section id="sidebar">
-    <a href="{{ url_for('home') }}" class="brand">
-      <i class="fas fa-paw"></i>
-      <span class="text">Totó</span>
-    </a>
-    <ul class="side-menu top">
-      <li>  
-        <a href="{{ url_for('home') }}">
-          <i class='bx bxs-dashboard'></i>
-          <span class="text">Menu</span>
+    <section id="sidebar">
+        <a href="{{ url_for('home') }}" class="brand">
+            <i class="fas fa-paw"></i>
+            <span class="text">Totó</span>
         </a>
-      </li>
-      <li>
-        <a href="{{ url_for('servico') }}">
-          <i class='bx bxs-shopping-bag-alt'></i>
-          <span class="text">Serviços</span>
-        </a>
-      </li>
-      <li class="active">
-        <a href="{{ url_for('vacina') }}">
-          <i class='bx bxs-doughnut-chart'></i>
-          <span class="text">Vacina</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ url_for('index') }}" class="logout">
-          <i class='bx bxs-log-out-circle'></i>
-          <span class="text">Logout</span>
-        </a>
-      </li>
-    </ul>
-  </section>
+        <ul class="side-menu top">
+            <li> 
+                <a href="{{ url_for('home') }}">
+                    <i class='bx bxs-dashboard'></i>
+                    <span class="text">Menu</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('servico_page') }}">
+                    <i class='bx bxs-shopping-bag-alt'></i>
+                    <span class="text">Serviços</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="{{ url_for('vacina_page') }}">
+                    <i class='bx bxs-doughnut-chart'></i>
+                    <span class="text">Vacina</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('index') }}" class="logout">
+                    <i class='bx bxs-log-out-circle'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
 
-  <!-- CONTEÚDO -->
-  <section id="content">
-    <main>
-      <div class="head-title">
-        <div class="left">
-          <h1>Agendar Vacinação</h1>
-        </div>
-      </div>
+    <section id="content">
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Agendar Vacinação</h1>
+                </div>
+            </div>
 
-      <!-- Blocos lado a lado -->
-      <div class="container-vacina">
+            <div class="container-vacina">
+                <div class="formulario-vacina">
+                    <h3>Cadastrar Nova Vacina</h3>
+                    <form id="form-cadastrar-vacina" action="{{ url_for('cadastrar_vacina_registro') }}" method="POST">
+                        
+                        <label for="pet_id_select_vacina">Nome do Pet:</label>
+                        <select name="pet_id" id="pet_id_select_vacina" required>
+                            <option value="">Selecione um pet</option>
+                            {% for p_item in pets %}
+                                <option value="{{ p_item.id }}">{{ p_item.nome }}</option>
+                            {% else %}
+                                <option value="" disabled>Nenhum pet cadastrado para este cliente</option>
+                            {% endfor %}
+                        </select>
 
-        <!-- Formulário de Cadastro de Vacina -->
-        <div class="formulario-vacina">
-          <h3>Cadastrar Nova Vacina</h3>
-          <form action="{{ url_for('cadastrar_vacina') }}" method="POST">
-            <label for="nomePet">Nome do Pet:</label>
-            <input type="text" id="nomePet" name="nomePet" required>
+                        <label for="tipo_vacina_input">Tipo da Vacina:</label>
+                        <input type="text" id="tipo_vacina_input" name="vacina" required>
 
-            <label for="vacina">Tipo da Vacina:</label>
-            <input type="text" id="vacina" name="vacina" required>
+                        <label for="data_aplicacao_input">Data da Aplicação:</label>
+                        <input type="date" id="data_aplicacao_input" name="data" required>
 
-            <label for="data">Data da Aplicação:</label>
-            <input type="date" id="data" name="data" required>
+                        <label for="proxima_aplicacao_input">Próxima Aplicação:</label>
+                        <input type="date" id="proxima_aplicacao_input" name="proxima_data">
 
-            <label for="proxima_data">Próxima Aplicação:</label>
-            <input type="date" id="proxima_data" name="proxima_data">
+                        <button type="submit">Registrar Vacina</button>
+                    </form>
+                </div>
 
-            <button type="submit">Registrar Vacina</button>
-          </form>
-        </div>
+                <div class="lista-agendamentos"> <h3>Vacinas Aplicadas</h3>
+                    {% if registros_vacinas and registros_vacinas|length > 0 %} {# Mudado para registros_vacinas #}
+                    <ul>
+                        {% for v in registros_vacinas %} {# Mudado para registros_vacinas #}
+                            <li>
+                                <strong>{{ v.nome_pet }}</strong>
+                                <span>
+                                    – {{ v.nome_vacina }} em {{ v.data_aplicacao }}
+                                    {% if v.proxima_data_aplicacao %}
+                                        | Próxima: {{ v.proxima_data_aplicacao }}
+                                    {% endif %}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>Seu pet ainda não tem vacina registrada nesta clínica.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </section>
 
-        <!-- Lista de Vacinas -->
-        <div class="lista-agendamentos">
-          <h3>Vacinas Aplicadas</h3>
-          {% if vacinas %}
-          <ul>
-            {% for v in vacinas %}
-              <li>
-                <strong>{{ v.nome_pet }}</strong>
-                <span>
-                  – {{ v.vacina }} em {{ v.data }}
-                  {% if v.proxima_data %}
-                    | Próxima: {{ v.proxima_data }}
-                  {% endif %}
-                </span>
-              </li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p>Seu pet ainda não tem vacina registrada nesta clínica.</p>
-          {% endif %}
-        </div>
-
-      </div>
-    </main>
-  </section>
-
-  <!-- SCRIPT -->
-  <script src="{{ url_for('static', filename='js/vacina.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vacina.js') }}"></script>
 </body>
 </html>
