@@ -84,22 +84,35 @@
             </form>
         </div>
 
-        <!-- Lista de Serviços Agendados -->
-        <div class="lista-agendamentos">
-          <h3>Serviços Agendados</h3>
-          <ul id="lista-agendados">
-              {% if agendamentos %}
-                {% for a in agendamentos %}
-                  <li>
-                    <strong>{{ a.nome_pet }}</strong>
-                    <span>– {{ a.servico }} em {{ a.data }} às {{ a.hora }}</span>
-                  </li>
-                {% endfor %}
-              {% else %}
-                <li id="nenhum-agendamento">Nenhum serviço agendado ainda.</li>
-              {% endif %}
-          </ul>
-        </div>
+      <div class="lista-agendamentos">
+        <h3>Serviços Agendados</h3>
+        <ul id="lista-agendados" style="list-style: none; padding: 0;">
+          {% if agendamentos %}
+            {% for a in agendamentos %}
+            <li style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #f9f9f9;">
+              <div style="margin-bottom: 10px;">
+                  <strong>{{ a.nome_pet }}</strong>
+                  <span>– {{ a.servico }}</span>
+                  <span>(ID Ag: {{ a.agendamento_id }})</span> </div>
+              
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                  <form method="POST" action="{{ url_for('atualizar_agendamento_inline', agendamento_id=a.agendamento_id) }}" style="display: contents;">
+                    <input type="date" name="data" value="{{ a.data }}" required style="padding: 6px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 3px;">
+                    <input type="time" name="hora" value="{{ a.hora }}" required style="padding: 6px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 3px;">
+                    <button type="submit" style="padding: 6px 10px; font-size: 0.9em; background-color: #4CAF50; color:white; border:none; border-radius:3px; cursor:pointer;">Atualizar</button>
+                  </form>
+                  
+                  <form method="POST" action="{{ url_for('excluir_agendamento_inline', agendamento_id=a.agendamento_id) }}" style="display: contents;" onsubmit="return confirm('Tem certeza que deseja excluir este agendamento?');">
+                    <button type="submit" style="padding: 6px 10px; font-size: 0.9em; background-color: #f44336; color:white; border:none; border-radius:3px; cursor:pointer;">Excluir</button>
+                  </form>
+              </div>
+            </li>
+            {% endfor %}
+          {% else %}
+            <li id="nenhum-agendamento" style="padding: 10px;">Nenhum serviço agendado ainda.</li>
+          {% endif %}
+        </ul>
+      </div>
 
       </div>
     </main>

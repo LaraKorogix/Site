@@ -7,7 +7,7 @@ from database import Database # Your updated database.py
 # Replace with your actual MySQL credentials and database name
 MYSQL_HOST = "localhost"  # Or your MySQL server IP/hostname
 MYSQL_USER = "root"
-MYSQL_PASSWORD = "ceub123456"
+MYSQL_PASSWORD = "DaviNobre2208."
 MYSQL_DATABASE = "petshop_db" # The database name you want to use/create
 
 app = Flask(__name__)
@@ -155,39 +155,88 @@ def home():
 # Exibe a página de agendamento de serviços, listando pets do cliente e serviços disponíveis.
 @app.route('/servico')
 def servico_page():
-    print(f"DEBUG: Acessando /servico")
-    print(f"DEBUG: Sessão 'logged_in': {session.get('logged_in')}")
-    print(f"DEBUG: Sessão 'cliente_id': {session.get('cliente_id')}")
-
+    # Seu código existente para buscar pets_do_cliente, servicos_db...
     pets_do_cliente = []
     if session.get('logged_in') and session.get('cliente_id'):
         cliente_id_logado = session['cliente_id']
-        print(f"DEBUG: Tentando buscar pets para cliente_id: {cliente_id_logado}")
         pets_do_cliente = db_manager.listar_pets_simples(cliente_id=cliente_id_logado)
-        print(f"DEBUG: Pets encontrados para o cliente: {pets_do_cliente}")
-    else:
-        print("DEBUG: Cliente não logado ou sem cliente_id na sessão. Nenhum pet será listado.")
     
-    servicos_db = db_manager.listar_servicos() # Lista todos os serviços disponíveis
+    servicos_db = db_manager.listar_servicos()
     
-    # Carrega agendamentos existentes do cliente para exibição na página de serviços.
     agendamentos_do_cliente_atual = []
     if session.get('logged_in') and session.get('cliente_id'):
        agendamentos_do_cliente_atual = db_manager.listar_agendamentos_detalhados(cliente_id=session['cliente_id'])
     
-    agendamentos_para_template_atual = [] # Formatação para o template de serviços
+    # Esta parte é crucial para os formulários inline
+    agendamentos_para_template_atual = []
     for ag_atual in agendamentos_do_cliente_atual:
         agendamentos_para_template_atual.append({
-            'nome_pet': ag_atual['nome_pet'],# type: ignore
-            'servico': ag_atual['nome_servico'],# type: ignore
-            'data': ag_atual['data'],# type: ignore
-            'hora': ag_atual['hora'], # type: ignore
+            'agendamento_id': ag_atual['agendamento_id'], # type: ignore
+            'nome_pet': ag_atual['nome_pet'], # type: ignore
+            'servico': ag_atual['nome_servico'], # type: ignore
+            'data': ag_atual['data'], # Usado no value="" do input date # type: ignore
+            'hora': ag_atual['hora'], # Usado no value="" do input time # type: ignore
+            # 'pet_cliente_id': ag_atual['pet_cliente_id'] # Se disponível de listar_agendamentos_detalhados
         })
 
     return render_template('servicos.html', 
                            agendamentos=agendamentos_para_template_atual, 
                            pets=pets_do_cliente, 
                            servicos=servicos_db)
+
+# --- ROTAS ADICIONADAS PARA FORMULÁRIOS INLINE ---
+
+@app.route('/agendamento/atualizar-inline/<int:agendamento_id>', methods=['POST'])
+def atualizar_agendamento_inline(agendamento_id):
+    if not session.get('logged_in') or not session.get('cliente_id'):
+        # Sem flash, apenas redireciona ou poderia retornar um erro HTTP 401/403
+        return redirect(url_for('logincadastro')) # Ou uma página de erro
+
+    cliente_id_logado = session['cliente_id']
+    
+    # Verificação de propriedade é crucial
+    if not db_manager.verificar_propriedade_agendamento(agendamento_id, cliente_id_logado):
+        print(f" tentativa não autorizada de atualização do agendamento {agendamento_id} pelo cliente {cliente_id_logado}")
+        return redirect(url_for('servico_page')) # Redireciona sem fazer nada
+
+    nova_data = request.form.get('data')
+    nova_hora = request.form.get('hora')
+
+    if not nova_data or not nova_hora:
+        # Inputs no HTML são 'required', mas uma verificação extra não faria mal.
+        # Sem flash, se dados faltarem, a atualização falhará (db_manager.editar_agendamento retornará False).
+        print(f" dados ausentes para atualização do agendamento {agendamento_id}: data='{nova_data}', hora='{nova_hora}'")
+        return redirect(url_for('servico_page'))
+
+    nova_data_hora_str = f"{nova_data} {nova_hora}"
+
+    # A função editar_agendamento já imprime erros no console do servidor
+    success = db_manager.editar_agendamento(agendamento_id, nova_data_hora_str)
+    if not success:
+        print(f" falha na atualização do banco de dados para o agendamento {agendamento_id}")
+        # Você pode decidir o que fazer aqui. Por enquanto, apenas redireciona.
+    
+    return redirect(url_for('servico_page')) # Redireciona para atualizar a lista
+
+
+@app.route('/agendamento/excluir-inline/<int:agendamento_id>', methods=['POST'])
+def excluir_agendamento_inline(agendamento_id):
+    if not session.get('logged_in') or not session.get('cliente_id'):
+        return redirect(url_for('logincadastro'))
+
+    cliente_id_logado = session['cliente_id']
+    
+    # Verificação de propriedade
+    if not db_manager.verificar_propriedade_agendamento(agendamento_id, cliente_id_logado):
+        print(f" tentativa não autorizada de exclusão do agendamento {agendamento_id} pelo cliente {cliente_id_logado}")
+        return redirect(url_for('servico_page'))
+
+    # A função excluir_agendamento já imprime erros no console do servidor
+    success = db_manager.excluir_agendamento(agendamento_id)
+    if not success:
+        print(f" falha na exclusão do banco de dados para o agendamento {agendamento_id}")
+
+    return redirect(url_for('servico_page')) # Redireciona para atualizar a lista
 
 # Processa o formulário de novo agendamento de serviço.
 @app.route('/cadastrar-servico', methods=['POST'])

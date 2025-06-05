@@ -376,3 +376,87 @@ class Database:
         cursor.close()
         conn.close()
         return registros
+    def buscar_agendamento_por_id(self, agendamento_id):
+        """Busca um agendamento específico pelo ID, formatando data e hora."""
+        conn = self._get_db_conn()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT 
+                a.id as agendamento_id, 
+                a.pet_id,
+                p.nome as nome_pet,
+                p.cliente_id, # Importante para verificação de propriedade
+                a.servico_id,
+                s.nome as nome_servico,
+                DATE_FORMAT(a.data_hora, '%Y-%m-%d') as data,
+                DATE_FORMAT(a.data_hora, '%H:%i') as hora
+            FROM agendamentos a
+            JOIN pets p ON a.pet_id = p.id
+            JOIN servicos s ON a.servico_id = s.id
+            WHERE a.id = %s
+        """
+        try:
+            cursor.execute(query, (agendamento_id,))
+            agendamento = cursor.fetchone()
+            return agendamento
+        except mysql.connector.Error as e:
+            print(f"MySQL Error ao buscar agendamento por ID: {e}") # Log no servidor
+            return None
+        finally:
+            cursor.close()
+            conn.close()
+
+    def editar_agendamento(self, agendamento_id, nova_data_hora_str):
+        """Atualiza a data e hora de um agendamento existente."""
+        conn = self._get_db_conn()
+        cursor = conn.cursor()
+        try:
+            dt_obj = datetime.strptime(nova_data_hora_str, "%Y-%m-%d %H:%M")
+            data_hora_mysql = dt_obj.strftime("%Y-%m-%d %H:%M:%S")
+
+            cursor.execute("UPDATE agendamentos SET data_hora = %s WHERE id = %s",
+                           (data_hora_mysql, agendamento_id))
+            conn.commit()
+            if cursor.rowcount > 0:
+                print(f"DB INFO: Agendamento ID {agendamento_id} atualizado para {data_hora_mysql}.") # Log no servidor
+                return True
+            else:
+                print(f"DB WARN: Nenhuma linha atualizada para agendamento ID {agendamento_id}.") # Log no servidor
+                return False
+        except ValueError:
+            print(f"DB Error: Formato de data/hora inválido para edição: '{nova_data_hora_str}'. Use YYYY-MM-DD HH:MM.") # Log no servidor
+            return False
+        except mysql.connector.Error as e:
+            print(f"MySQL Error ao editar agendamento ID {agendamento_id}: {e}") # Log no servidor
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
+    def excluir_agendamento(self, agendamento_id):
+        """Exclui um agendamento específico pelo ID."""
+        conn = self._get_db_conn()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("DELETE FROM agendamentos WHERE id = %s", (agendamento_id,))
+            conn.commit()
+            if cursor.rowcount > 0:
+                print(f"DB INFO: Agendamento ID {agendamento_id} excluído.") # Log no servidor
+                return True
+            else:
+                print(f"DB WARN: Nenhuma linha excluída para agendamento ID {agendamento_id}.") # Log no servidor
+                return False
+        except mysql.connector.Error as e:
+            print(f"MySQL Error ao excluir agendamento ID {agendamento_id}: {e}") # Log no servidor
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
+    def verificar_propriedade_agendamento(self, agendamento_id, cliente_id_logado):
+        """Verifica se um agendamento pertence a um cliente específico."""
+        agendamento = self.buscar_agendamento_por_id(agendamento_id)
+        if agendamento and agendamento.get('cliente_id') == cliente_id_logado:  # type: ignore
+            return True
+        print(f"DB WARN: Tentativa de acesso não autorizado ao agendamento ID {agendamento_id} pelo cliente ID {cliente_id_logado}.") # Log no servidor
+        return False
