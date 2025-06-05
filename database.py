@@ -1,76 +1,113 @@
 # database.py
-import sqlite3
+import mysql.connector
+from mysql.connector import errorcode # For specific error handling
 from datetime import datetime
 
 class Database:
-    def __init__(self, db_file):
-        self.db_file = db_file
+    def __init__(self, host, user, password, database_name):
+        # MySQL connection parameters
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database_name = database_name
+        self._ensure_database_exists() # Ensure database exists on initialization
+
+    def _ensure_database_exists(self):
+        """Creates the database if it doesn't already exist."""
+        try:
+            # Connect to MySQL server (without specifying a database initially)
+            conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password
+            )
+            cursor = conn.cursor()
+            # Use CHARACTER SET and COLLATE for proper unicode support
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.database_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+            print(f"Database '{self.database_name}' checked/created successfully.")
+            cursor.close()
+            conn.close()
+        except mysql.connector.Error as err:
+            print(f"Error ensuring database '{self.database_name}' exists: {err}")
+            # Depending on your app's needs, you might want to raise this error
+            # or handle it more gracefully. For now, just printing.
 
     def _get_db_conn(self):
-        conn = sqlite3.connect(self.db_file)
-        conn.row_factory = sqlite3.Row
-        return conn
+        """Establishes a connection to the MySQL database."""
+        try:
+            conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database_name
+            )
+            return conn
+        except mysql.connector.Error as err:
+            print(f"Error connecting to MySQL database '{self.database_name}': {err}")
+            raise # Re-raise the error so calling functions know connection failed
 
     def criar_tabelas(self):
+        """Creates the necessary tables in the MySQL database if they don't exist."""
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        cursor = conn.cursor() # Standard cursor for DDL
 
-        # Tabela Clientes
+        # Table Clientes
         cursor.execute('''CREATE TABLE IF NOT EXISTS clientes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INT PRIMARY KEY AUTO_INCREMENT,
             nome VARCHAR(100) NOT NULL,
             cpf VARCHAR(14) UNIQUE NOT NULL,
             telefone VARCHAR(20),
             email VARCHAR(100),
             genero VARCHAR(20),
-            data_nascimento VARCHAR(10),
+            data_nascimento VARCHAR(10), 
             senha VARCHAR(100) 
-        )''')
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci''') # Added ENGINE & CHARSET for MySQL
 
-        # Tabela Pets - A coluna 'idade' continua existindo, mas será opcional na inserção
+        # Table Pets
         cursor.execute('''CREATE TABLE IF NOT EXISTS pets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INT PRIMARY KEY AUTO_INCREMENT,
             nome VARCHAR(100) NOT NULL,
             especie VARCHAR(100) NOT NULL,
             raca VARCHAR(100) NOT NULL,
             idade INTEGER, 
-            cliente_id INTEGER,
+            cliente_id INT, 
             FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
-        )''')
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci''')
 
-        # ... (restante das tabelas: servicos, agendamentos, registros_vacinas) ...
-        # (O código das outras tabelas permanece o mesmo da sua versão anterior)
-
+        # Table Servicos
         cursor.execute('''CREATE TABLE IF NOT EXISTS servicos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INT PRIMARY KEY AUTO_INCREMENT,
             nome VARCHAR(100) NOT NULL UNIQUE,
             preco DECIMAL(9,2) NOT NULL
-        )''')
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci''')
 
+        # Table Agendamentos
         cursor.execute('''CREATE TABLE IF NOT EXISTS agendamentos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            pet_id INTEGER,
-            servico_id INTEGER,
-            data_hora DATETIME,
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            pet_id INT,
+            servico_id INT,
+            data_hora DATETIME, 
             FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE,
             FOREIGN KEY (servico_id) REFERENCES servicos(id) ON DELETE CASCADE
-        )''')
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci''')
 
+        # Table Registros_Vacinas
         cursor.execute('''CREATE TABLE IF NOT EXISTS registros_vacinas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            pet_id INTEGER NOT NULL,
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            pet_id INT NOT NULL,
             nome_vacina VARCHAR(100) NOT NULL,
-            data_aplicacao DATE NOT NULL,
-            proxima_data_aplicacao DATE,
+            data_aplicacao DATE NOT NULL, 
+            proxima_data_aplicacao DATE, 
             FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE
-        )''')
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci''')
         
         conn.commit()
+        cursor.close()
         conn.close()
-        print("Tabelas (incluindo registros_vacinas) verificadas/criadas pela classe Database.")
+        print("MySQL Tables (incluindo registros_vacinas) verified/created.")
 
     def popular_servicos_iniciais(self):
-        # ... (código de popular_servicos_iniciais permanece o mesmo) ...
+        """Populates the 'servicos' table with initial data if they don't exist."""
         servicos_padrao = [
             ("Banho", 26.00),
             ("Tosa Higiênica", 25.00),
@@ -82,162 +119,178 @@ class Database:
         cursor = conn.cursor()
         for nome, preco in servicos_padrao:
             try:
-                cursor.execute("INSERT INTO servicos (nome, preco) VALUES (?, ?)", (nome, preco))
-            except sqlite3.IntegrityError:
-                pass
+                # Using %s as placeholder for MySQL
+                cursor.execute("INSERT INTO servicos (nome, preco) VALUES (%s, %s)", (nome, preco))
+            except mysql.connector.Error as err:
+                if err.errno == errorcode.ER_DUP_ENTRY: # Specific error for duplicate entry
+                    pass # Service already exists, skip
+                else:
+                    print(f"Error inserting service '{nome}': {err}") # Log other errors
         conn.commit()
+        cursor.close()
         conn.close()
-        print("Serviços iniciais verificados/populados pela classe Database.")
-
+        print("Initial services verified/populated for MySQL.")
 
     # --- Métodos CRUD para Clientes ---
-    # ... (cadastrar_cliente, listar_clientes, buscar_cliente_id_por_cpf permanecem os mesmos) ...
     def cadastrar_cliente(self, nome, cpf, telefone, email, genero, data_nascimento, senha):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO clientes (nome, cpf, telefone, email, genero, data_nascimento, senha) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            cursor.execute("INSERT INTO clientes (nome, cpf, telefone, email, genero, data_nascimento, senha) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                            (nome, cpf, telefone, email, genero, data_nascimento, senha))
             conn.commit()
             return True
-        except sqlite3.IntegrityError:
-            print(f"Erro DB: CPF '{cpf}' já cadastrado.")
+        except mysql.connector.Error as err:
+            if err.errno == errorcode.ER_DUP_ENTRY:
+                print(f"MySQL Error: CPF '{cpf}' já cadastrado.")
+            else:
+                print(f"MySQL Error ao cadastrar cliente: {err}")
             return False
         finally:
+            cursor.close()
             conn.close()
     
     def listar_clientes(self):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True) # Get rows as dictionaries
         cursor.execute("SELECT id, nome, cpf, telefone FROM clientes")
         clientes = cursor.fetchall()
+        cursor.close()
         conn.close()
-        return [dict(cliente) for cliente in clientes]
+        return clientes # Already a list of dicts
 
     def buscar_cliente_id_por_cpf(self, cpf):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM clientes WHERE cpf = ?", (cpf,))
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT id FROM clientes WHERE cpf = %s", (cpf,))
         cliente = cursor.fetchone()
+        cursor.close()
         conn.close()
-        return cliente['id'] if cliente else None
+        return cliente['id'] if cliente else None # type: ignore
 
     # --- Métodos CRUD para Pets ---
-    # Alterado: 'idade' é agora um parâmetro opcional com default None
     def adicionar_pet(self, nome, especie, raca, cliente_id, idade=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         try:
-            # A query continua incluindo 'idade', que será NULL se 'idade' for None
-            cursor.execute("INSERT INTO pets (nome, especie, raca, cliente_id, idade) VALUES (?, ?, ?, ?, ?)",
+            cursor.execute("INSERT INTO pets (nome, especie, raca, cliente_id, idade) VALUES (%s, %s, %s, %s, %s)",
                            (nome, especie, raca, cliente_id, idade))
             conn.commit()
-            return cursor.lastrowid
-        except Exception as e:
-            print(f"Erro ao adicionar pet no DB: {e}")
+            return cursor.lastrowid # Get the ID of the inserted row
+        except mysql.connector.Error as e:
+            print(f"MySQL Error ao adicionar pet: {e}")
             return None
         finally:
+            cursor.close()
             conn.close()
 
-    # ... (listar_pets_simples, buscar_pet_por_nome permanecem os mesmos) ...
     def listar_pets_simples(self, cliente_id=None):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         query = "SELECT id, nome FROM pets"
         params = []
         if cliente_id:
-            query += " WHERE cliente_id = ?"
+            query += " WHERE cliente_id = %s"
             params.append(cliente_id)
         cursor.execute(query, tuple(params))
         pets = cursor.fetchall()
+        cursor.close()
         conn.close()
-        return [dict(pet) for pet in pets]
+        return pets
 
     def buscar_pet_por_nome(self, nome_pet, cliente_id=None):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
-        query = "SELECT id FROM pets WHERE nome = ?"
+        cursor = conn.cursor(dictionary=True)
+        query = "SELECT id FROM pets WHERE nome = %s"
         params = [nome_pet]
         if cliente_id:
-            query += " AND cliente_id = ?"
+            query += " AND cliente_id = %s"
             params.append(cliente_id)
-        query += " LIMIT 1"
+        query += " LIMIT 1" # Ensure only one row is returned
         cursor.execute(query, tuple(params))
         pet = cursor.fetchone()
+        cursor.close()
         conn.close()
-        return pet['id'] if pet else None
+        return pet['id'] if pet else None # type: ignore
 
     # --- Métodos CRUD para Tipos de Serviços ---
-    # ... (listar_servicos, buscar_servico_por_nome permanecem os mesmos) ...
     def listar_servicos(self):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT id, nome, preco FROM servicos")
         servicos = cursor.fetchall()
+        cursor.close()
         conn.close()
-        return [dict(s) for s in servicos]
+        return servicos
 
     def buscar_servico_por_nome(self, nome_servico):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
-        cursor.execute("SELECT id, preco FROM servicos WHERE nome = ? LIMIT 1", (nome_servico,))
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT id, preco FROM servicos WHERE nome = %s LIMIT 1", (nome_servico,))
         servico = cursor.fetchone()
+        cursor.close()
         conn.close()
         return servico 
 
     # --- Métodos CRUD para Agendamentos ---
-    # ... (agendar_servico, listar_agendamentos_detalhados, _agendar_servico_comum, etc. permanecem os mesmos) ...
     def agendar_servico(self, pet_id, servico_id, data_hora_str):
         print(f"DB DEBUG (agendar_servico): Recebido pet_id={pet_id}, servico_id={servico_id}, data_hora_str='{data_hora_str}'")
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        # Use a separate cursor for verification to avoid issues if main transaction fails
+        verify_cursor = conn.cursor() 
         try:
-            # Verifica se os IDs existem nas tabelas referenciadas (BOA PRÁTICA)
-            cursor.execute("SELECT id FROM pets WHERE id = ?", (pet_id,))
-            if not cursor.fetchone():
-                print(f"DB DEBUG ERROR (agendar_servico): pet_id {pet_id} não encontrado na tabela pets.")
+            verify_cursor.execute("SELECT id FROM pets WHERE id = %s", (pet_id,))
+            if not verify_cursor.fetchone():
+                print(f"DB DEBUG ERROR (agendar_servico): pet_id {pet_id} não encontrado.")
                 return False
             
-            cursor.execute("SELECT id FROM servicos WHERE id = ?", (servico_id,))
-            if not cursor.fetchone():
-                print(f"DB DEBUG ERROR (agendar_servico): servico_id {servico_id} não encontrado na tabela servicos.")
+            verify_cursor.execute("SELECT id FROM servicos WHERE id = %s", (servico_id,))
+            if not verify_cursor.fetchone():
+                print(f"DB DEBUG ERROR (agendar_servico): servico_id {servico_id} não encontrado.")
                 return False
+            verify_cursor.close() # Close verify cursor once done
 
-            dt_obj = datetime.strptime(data_hora_str, "%Y-%m-%d %H:%M") # Espera YYYY-MM-DD HH:MM
-            data_hora_sqlite = dt_obj.strftime("%Y-%m-%d %H:%M:%S")
-            print(f"DB DEBUG (agendar_servico): data_hora_sqlite formatada para INSERT: '{data_hora_sqlite}'")
+            # Convert string to datetime object, then format for MySQL DATETIME
+            dt_obj = datetime.strptime(data_hora_str, "%Y-%m-%d %H:%M")
+            data_hora_mysql = dt_obj.strftime("%Y-%m-%d %H:%M:%S") # MySQL DATETIME format
+            print(f"DB DEBUG (agendar_servico): data_hora_mysql formatada: '{data_hora_mysql}'")
 
-            cursor.execute("INSERT INTO agendamentos (pet_id, servico_id, data_hora) VALUES (?, ?, ?)",
-                           (pet_id, servico_id, data_hora_sqlite))
+            main_cursor = conn.cursor()
+            main_cursor.execute("INSERT INTO agendamentos (pet_id, servico_id, data_hora) VALUES (%s, %s, %s)",
+                               (pet_id, servico_id, data_hora_mysql))
             conn.commit()
-            print(f"DB DEBUG (agendar_servico): INSERT e COMMIT realizados com SUCESSO.")
+            main_cursor.close()
+            print(f"DB DEBUG (agendar_servico): INSERT e COMMIT SUCESSO.")
             return True
-        except ValueError: # Erro na conversão de data/hora
-            print(f"DB DEBUG ERROR (agendar_servico): ValueError ao processar data_hora_str='{data_hora_str}'. Formato esperado YYYY-MM-DD HH:MM")
+        except ValueError:
+            print(f"DB DEBUG ERROR (agendar_servico): ValueError com data_hora_str='{data_hora_str}'. Formato: YYYY-MM-DD HH:MM")
             return False
-        except sqlite3.IntegrityError as e: # Erro de integridade (ex: FK não existe, mas a verificação acima deveria pegar)
-             print(f"DB DEBUG ERROR (agendar_servico): sqlite3.IntegrityError: {e}")
-             return False
-        except Exception as e: # Outras exceções do DB
-            print(f"DB DEBUG ERROR (agendar_servico): Exceção geral no DB: {e}")
-            import traceback # Para mais detalhes do erro
-            print(traceback.format_exc())
+        except mysql.connector.Error as e:
+            print(f"DB DEBUG ERROR (agendar_servico): MySQL Error: {e}")
+            # import traceback # Uncomment for detailed traceback during debugging
+            # print(traceback.format_exc())
             return False
         finally:
-            if conn: # Garante que conn existe antes de tentar fechar
+            # Garante que verify_cursor foi definido antes de tentar fechá-lo
+            if 'verify_cursor' in locals() and verify_cursor:
+                verify_cursor.close()  # Simplesmente feche o cursor
+
+            # Mantém a verificação para a conexão, pois conn.is_connected() existe
+            if 'conn' in locals() and conn and conn.is_connected():
                 conn.close()
 
     def listar_agendamentos_detalhados(self, cliente_id=None):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
+        # Using MySQL's DATE_FORMAT function
         base_query = '''
             SELECT 
                 a.id as agendamento_id, 
                 p.nome as nome_pet, 
                 s.nome as nome_servico,
                 s.preco as valor_servico,
-                strftime('%Y-%m-%d', a.data_hora) as data,
-                strftime('%H:%M', a.data_hora) as hora,
+                DATE_FORMAT(a.data_hora, '%Y-%m-%d') as data,
+                DATE_FORMAT(a.data_hora, '%H:%i') as hora, /* %i for minutes in MySQL */
                 c.nome as nome_cliente,
                 c.cpf as cpf_cliente
             FROM agendamentos a
@@ -247,20 +300,21 @@ class Database:
         '''
         params = []
         if cliente_id:
-            base_query += " WHERE c.id = ?"
+            base_query += " WHERE c.id = %s"
             params.append(cliente_id)
         base_query += " ORDER BY a.data_hora DESC"
         cursor.execute(base_query, tuple(params))
         agendamentos = cursor.fetchall()
+        cursor.close()
         conn.close()
-        return [dict(ag) for ag in agendamentos]
+        return agendamentos
 
     def _agendar_servico_comum(self, pet_id, nome_servico_comum, data_hora_str):
         servico_info = self.buscar_servico_por_nome(nome_servico_comum)
         if not servico_info:
             print(f"Erro: Tipo de serviço '{nome_servico_comum}' não encontrado.")
             return False
-        servico_id = servico_info['id']
+        servico_id = servico_info['id'] # type: ignore
         return self.agendar_servico(pet_id, servico_id, data_hora_str)
 
     def agendar_tosa_higienica(self, pet_id, data_hora_str):
@@ -276,45 +330,49 @@ class Database:
         return self._agendar_servico_comum(pet_id, "Aplicação de Vacina", data_hora_str)
 
     # --- Métodos CRUD para Registros de Vacinas ---
-    # ... (cadastrar_registro_vacina, listar_registros_vacinas permanecem os mesmos) ...
     def cadastrar_registro_vacina(self, pet_id, nome_vacina, data_aplicacao_str, proxima_data_aplicacao_str=None):
         conn = self._get_db_conn()
         cursor = conn.cursor()
         try:
-            datetime.strptime(data_aplicacao_str, "%Y-%m-%d")
+            # Validate date strings before insertion (MySQL DATE format is 'YYYY-MM-DD')
+            datetime.strptime(data_aplicacao_str, "%Y-%m-%d") # Validates format
             if proxima_data_aplicacao_str and proxima_data_aplicacao_str.strip() != "":
-                datetime.strptime(proxima_data_aplicacao_str, "%Y-%m-%d")
+                datetime.strptime(proxima_data_aplicacao_str, "%Y-%m-%d") # Validates format
             else:
-                proxima_data_aplicacao_str = None
-            cursor.execute("INSERT INTO registros_vacinas (pet_id, nome_vacina, data_aplicacao, proxima_data_aplicacao) VALUES (?, ?, ?, ?)",
+                proxima_data_aplicacao_str = None # Ensure it's SQL NULL if empty
+            
+            cursor.execute("INSERT INTO registros_vacinas (pet_id, nome_vacina, data_aplicacao, proxima_data_aplicacao) VALUES (%s, %s, %s, %s)",
                            (pet_id, nome_vacina, data_aplicacao_str, proxima_data_aplicacao_str))
             conn.commit()
             return True
         except ValueError:
-            print(f"Erro: Formato de data inválido para vacina. Use YYYY-MM-DD.")
+            print(f"MySQL Error: Formato de data inválido para vacina. Use YYYY-MM-DD.")
             return False
-        except Exception as e:
-            print(f"Erro ao cadastrar registro de vacina: {e}")
+        except mysql.connector.Error as e:
+            print(f"MySQL Error ao cadastrar registro de vacina: {e}")
             return False
         finally:
+            cursor.close()
             conn.close()
 
     def listar_registros_vacinas(self, pet_id=None):
         conn = self._get_db_conn()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
+        # Using MySQL's DATE_FORMAT for DATE columns as well for consistency
         query = """
             SELECT rv.id, rv.pet_id, p.nome as nome_pet, rv.nome_vacina, 
-                   strftime('%Y-%m-%d', rv.data_aplicacao) as data_aplicacao, 
-                   strftime('%Y-%m-%d', rv.proxima_data_aplicacao) as proxima_data_aplicacao
+                   DATE_FORMAT(rv.data_aplicacao, '%Y-%m-%d') as data_aplicacao, 
+                   DATE_FORMAT(rv.proxima_data_aplicacao, '%Y-%m-%d') as proxima_data_aplicacao
             FROM registros_vacinas rv
             JOIN pets p ON rv.pet_id = p.id
         """
         params = []
         if pet_id:
-            query += " WHERE rv.pet_id = ?"
+            query += " WHERE rv.pet_id = %s"
             params.append(pet_id)
         query += " ORDER BY rv.data_aplicacao DESC"
         cursor.execute(query, tuple(params))
         registros = cursor.fetchall()
+        cursor.close()
         conn.close()
-        return [dict(reg) for reg in registros]
+        return registros
